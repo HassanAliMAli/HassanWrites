@@ -10,9 +10,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      pages: write
-      contents: read
+      contents: write
     steps:
       - name: Check out your repository
         uses: actions/checkout@v3
@@ -28,11 +26,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: "Upload artifact"
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-      
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
