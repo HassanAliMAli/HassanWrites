@@ -1,7 +1,7 @@
 
 backend:
   name: github
-  repo: <your-github-username>/<your-repo-name> # e.g. decap-projects/decap-cms-astro-demo
+  repo: HassanAliMAli/HassanWrites # e.g. decap-projects/decap-cms-astro-demo
   branch: main # Branch to update (optional; defaults to master)
 
 media_folder: "src/assets"
