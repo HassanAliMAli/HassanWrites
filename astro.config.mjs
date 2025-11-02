@@ -5,7 +5,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://your-domain.com',
+  site: 'https://HassanAliMAli.github.io',
+  base: '/HassanWrites',
   integrations: [
     sitemap(),
     AstroPWA({
