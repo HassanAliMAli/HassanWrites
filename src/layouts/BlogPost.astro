@@ -1,0 +1,41 @@
+---
+import Layout from './Layout.astro';
+import Giscus from '../components/Giscus.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+  <article>
+    <h1>{frontmatter.title}</h1>
+    <p>Published on: {frontmatter.pubDate.toString().slice(0,10)}</p>
+    <p><em>{frontmatter.description}</em></p>
+    <hr />
+    <slot />
+  </article>
+
+  <!-- Monetization: AdSense/EthicalAds -->
+  <div>
+    <!-- Add your ad code here -->
+  </div>
+
+  <!-- Monetization: Buy Me a Coffee -->
+  <div>
+    <a href="https://www.buymeacoffee.com/<your-username>" target="_blank">
+      <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" >
+    </a>
+  </div>
+
+  <Giscus
+    repo="HassanAliMAli/HassanWrites"
+    repoId="R_kgDOQMfVUQ"
+    category="Announcements"
+    categoryId="DIC_kwDOQMfVUc4CxXAD"
+    mapping="pathname"
+    reactionsEnabled="1"
+    emitMetadata="0"
+    inputPosition="bottom"
+    theme="light"
+    lang="en"
+  />
+</Layout>

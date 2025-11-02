@@ -1,0 +1,30 @@
+---
+const {
+  repo,
+  repoId,
+  category,
+  categoryId,
+  mapping,
+  reactionsEnabled,
+  emitMetadata,
+  inputPosition,
+  theme,
+  lang,
+} = Astro.props;
+---
+
+<script
+  src="https://giscus.app/client.js"
+  data-repo={repo} # e.g. giscus/giscus-component
+  data-repo-id={repoId} # e.g. R_kgDOG_vYxA
+  data-category={category} # e.g. Announcements
+  data-category-id={categoryId} # e.g. DIC_kwDOG_vYxM4CSV9s
+  data-mapping={mapping} # e.g. pathname
+  data-reactions-enabled={reactionsEnabled} # e.g. 1
+  data-emit-metadata={emitMetadata} # e.g. 0
+  data-input-position={inputPosition} # e.g. bottom
+  data-theme={theme} # e.g. light
+  data-lang={lang} # e.g. en
+  crossorigin="anonymous"
+  async>
+</script>
