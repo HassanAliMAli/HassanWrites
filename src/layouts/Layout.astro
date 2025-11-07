@@ -10,15 +10,8 @@ import '../styles/global.css';
 	    <meta name="generator" content={Astro.generator} />
 	    <title>Astro Basics</title>
 	
-	    <!-- Google Analytics -->
-	    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-	    <script>
-	      window.dataLayer = window.dataLayer || [];
-	      function gtag(){dataLayer.push(arguments);}
-	      gtag('js', new Date());
-	
-	      gtag('config', 'G-XXXXXXXXXX');
-	    </script>
+	    <!-- Plausible Analytics -->
+	    <script defer data-domain="YOUR_DOMAIN" src="https://plausible.io/js/script.js"></script>
 	  </head>	<body>
 	    <header>
 	      <nav>
