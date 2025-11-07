@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { marked } from 'marked';
@@ -12,7 +12,7 @@ import { calculateReadingTime } from '@/lib/utils';
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'src/content/blog', `${slug}.md`);
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  const fileContent = await fs.readFile(filePath, 'utf-8');
   const { data } = matter(fileContent);
 
   return {
@@ -41,10 +41,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 import RelatedPosts from '@/components/RelatedPosts';
 
-const PostPage = ({ params }: { params: { slug: string } }) => {
+const PostPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'src/content/blog', `${slug}.md`);
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  const fileContent = await fs.readFile(filePath, 'utf-8');
   const { data, content } = matter(fileContent);
   const readingTime = calculateReadingTime(content);
 
@@ -81,7 +81,7 @@ export default PostPage;
 
 export async function generateStaticParams() {
   const blogDir = 'src/content/blog';
-  const files = fs.readdirSync(path.join(process.cwd(), blogDir));
+  const files = await fs.readdir(path.join(process.cwd(), blogDir));
 
   return files.map(filename => ({
     slug: filename.replace('.md', ''),
