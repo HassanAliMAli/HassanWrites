@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "postbuild": "npm run build:scripts && npm run build:rss && npm run build:search",
     "build:scripts": "tsc --project tsconfig.script.json",
     "build:rss": "node dist/generate-rss.js > public/rss.xml",
