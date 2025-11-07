@@ -1,7 +1,8 @@
 {
-  "name": "my-blog",
-  "version": "0.1.0",
+  "name": "hassan-writes",
+  "version": "1.0.0",
   "private": true,
+  "description": "A Medium-like blog built with Next.js and deployed on GitHub Pages",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
@@ -10,7 +11,7 @@
     "build:rss": "node dist/generate-rss.js > public/rss.xml",
     "build:search": "node dist/generate-search-index.js",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "next lint",
     "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
@@ -32,6 +33,7 @@
     "@next/bundle-analyzer": "^16.0.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
+    "@types/next-pwa": "^5.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

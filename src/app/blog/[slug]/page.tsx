@@ -6,14 +6,28 @@ import { marked } from 'marked';
 import Comments from '@/components/Comments';
 
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 import { calculateReadingTime } from '@/lib/utils';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = params;
+type Params = { slug: string };
+
+type FrontmatterData = {
+  title: string;
+  description: string;
+  pubDate: string;
+  author: string;
+  image: string;
+  tags: string[];
+};
+
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const awaitedParams = await params;
+  const { slug } = awaitedParams;
   const filePath = path.join(process.cwd(), 'src/content/blog', `${slug}.md`);
   const fileContent = await fs.readFile(filePath, 'utf-8');
-  const { data } = matter(fileContent);
+  const result = matter(fileContent);
+  const data = result.data as FrontmatterData;
 
   return {
     title: data.title,
@@ -41,11 +55,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 import RelatedPosts from '@/components/RelatedPosts';
 
-const PostPage = async ({ params }: { params: { slug: string } }) => {
-  const { slug } = params;
+const PostPage = async ({ params }: { params: Promise<Params> }) => {
+  const awaitedParams = await params;
+  const { slug } = awaitedParams;
   const filePath = path.join(process.cwd(), 'src/content/blog', `${slug}.md`);
   const fileContent = await fs.readFile(filePath, 'utf-8');
-  const { data, content } = matter(fileContent);
+  const result = matter(fileContent);
+  const data = result.data as FrontmatterData;
+  const content = result.content;
   const readingTime = calculateReadingTime(content);
 
   return (
@@ -54,7 +71,7 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight text-gray-900 dark:text-white">{data.title}</h1>
         <div className="flex items-center space-x-4 mb-8">
           <div className="flex items-center space-x-2">
-            <img src="/images/author.png" alt={data.author} className="w-10 h-10 rounded-full" />
+            <Image src="/images/author.png" alt={data.author} width={40} height={40} className="w-10 h-10 rounded-full" />
             <div>
               <p className="font-semibold text-gray-900 dark:text-white">{data.author}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -65,10 +82,10 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
             </div>
           </div>
         </div>
-        {data.image && <img src={data.image} alt={data.title} className="w-full h-auto rounded-lg mb-8" />} 
+        {data.image && <Image src={data.image} alt={data.title} width={800} height={400} className="w-full h-auto rounded-lg mb-8" />} 
         <div
           className="prose dark:prose-invert max-w-none text-lg leading-8"
-          dangerouslySetInnerHTML={{ __html: marked(content) }}
+          dangerouslySetInnerHTML={{ __html: (await marked(content)) as string }}
         ></div>
       </article>
       <Comments />

@@ -1,12 +1,12 @@
-import type { NextConfig } from 'next';
-import withPWA from 'next-pwa';
-import withBundleAnalyzer from '@next/bundle-analyzer';
+const withPWA = require('next-pwa');
+const withBundleAnalyzer = require('@next/bundle-analyzer');
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: 'export',
   basePath: '/HassanWrites',
   assetPrefix: '/HassanWrites/',
   reactCompiler: true,
+  serverExternalPackages: ['flexsearch'],
 };
 
 const withPWAConfig = withPWA({
@@ -19,4 +19,4 @@ const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
-export default bundleAnalyzer(withPWAConfig(nextConfig));
+module.exports = bundleAnalyzer(withPWAConfig(nextConfig));

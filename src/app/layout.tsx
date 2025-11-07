@@ -158,7 +158,7 @@ export default function RootLayout({
 
               <link rel="manifest" href="/manifest.json" />
 
-              <script defer data-domain="YOUR_DOMAIN" src="https://plausible.io/js/script.js"></script>
+              {/* <script defer data-domain="YOUR_DOMAIN" src="https://plausible.io/js/script.js"></script> */}
 
             </head>
 

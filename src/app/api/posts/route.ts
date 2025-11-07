@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   const blogDir = 'src/content/blog';
   const files = fs.readdirSync(path.join(process.cwd(), blogDir));

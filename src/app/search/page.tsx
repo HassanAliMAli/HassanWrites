@@ -5,9 +5,9 @@ import Link from 'next/link';
 import FlexSearch from 'flexsearch';
 
 const SearchPage = () => {
-  const [index, setIndex] = useState(null);
+  const [index, setIndex] = useState<any>(null);
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<any[]>([]);
 
   useEffect(() => {
     const loadIndex = async () => {
@@ -32,12 +32,14 @@ const SearchPage = () => {
   }, []);
 
   useEffect(() => {
-    if (index && query) {
-      const searchResults = index.search(query, { enrich: true });
-      const allResults = searchResults.flatMap(result => result.result);
-      setResults(allResults);
-    } else {
-      setResults([]);
+    if (index) {
+      if (query) {
+        const searchResults = index.search(query, { enrich: true });
+        const allResults = searchResults.flatMap((result: any) => result.result);
+        setResults(allResults);
+      } else {
+        setResults([]);
+      }
     }
   }, [index, query]);
 

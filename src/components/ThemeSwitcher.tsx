@@ -9,7 +9,7 @@ import { useRef } from 'react';
 const ThemeSwitcher = () => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
-  const ref = useRef();
+  const ref = useRef<HTMLButtonElement>(null);
   const { buttonProps } = useButton(
     {
       onPress: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
@@ -19,6 +19,7 @@ const ThemeSwitcher = () => {
 
   useEffect(() => {
     setMounted(true);
+    return () => setMounted(false);
   }, []);
 
   if (!mounted) {

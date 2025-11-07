@@ -1,16 +1,18 @@
 'use client';
 
-import { useLink } from 'react-aria';
-import { useRef } from 'react';
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
+import { PropsWithChildren } from 'react';
 
-const AccessibleLink = (props) => {
-  const ref = useRef();
-  const { linkProps } = useLink(props, ref);
+interface AccessibleLinkProps extends LinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}
 
+const AccessibleLink = ({ children, href, className, ...props }: PropsWithChildren<AccessibleLinkProps>) => {
   return (
-    <Link {...props} {...linkProps} ref={ref}>
-      {props.children}
+    <Link href={href} className={className} {...props}>
+      {children}
     </Link>
   );
 };

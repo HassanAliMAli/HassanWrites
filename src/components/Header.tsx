@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import ThemeSwitcher from './ThemeSwitcher';
 
 import AccessibleLink from './AccessibleLink';

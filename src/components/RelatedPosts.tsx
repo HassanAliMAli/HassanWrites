@@ -1,18 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import matter from 'gray-matter';
 
 import AccessibleLink from './AccessibleLink';
 
-const RelatedPosts = ({ currentPost }) => {
-  const [relatedPosts, setRelatedPosts] = useState([]);
+type Post = {
+  slug: string;
+  frontmatter: {
+    title: string;
+    description: string;
+    tags: string[];
+  };
+};
+
+type RelatedPostsProps = {
+  currentPost: {
+    slug: string;
+    frontmatter: {
+      tags: string[];
+    };
+  };
+};
+
+const RelatedPosts = ({ currentPost }: RelatedPostsProps) => {
+  const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       const res = await fetch('/api/posts');
-      const posts = await res.json();
+      const posts: Post[] = await res.json();
 
       const related = posts
         .filter(post => post.slug !== currentPost.slug)
