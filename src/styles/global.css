@@ -1,6 +1,98 @@
+/* Reset and base styles */
 html,
 body {
 	margin: 0;
 	width: 100%;
 	height: 100%;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	background-color: #f0f2f5;
+	color: #333;
+}
+
+/* Layout */
+body {
+	padding: 2rem;
+}
+
+main {
+	max-width: 800px;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 2rem;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+header {
+	margin-bottom: 2rem;
+}
+
+nav {
+	display: flex;
+	gap: 1rem;
+}
+
+nav a {
+	color: #333;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+nav a:hover {
+	color: #007bff;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 0;
+}
+
+h1 {
+	font-size: 2.5rem;
+}
+
+p {
+	line-height: 1.6;
+}
+
+a {
+	color: #007bff;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+/* Blog Post List */
+ul {
+	list-style: none;
+	padding: 0;
+}
+
+li {
+	margin-bottom: 2rem;
+}
+
+li a {
+	font-size: 1.5rem;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+/* Blog Post */
+article {
+	padding-bottom: 2rem;
+	border-bottom: 1px solid #eee;
+}
+
+article:last-of-type {
+	border-bottom: none;
+}
+
+article img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	margin-top: 1rem;
 }
