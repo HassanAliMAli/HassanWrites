@@ -14,11 +14,129 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
 
-  title: 'HassanWrites',
+
+
+  title: {
+
+
+
+    default: 'HassanWrites',
+
+
+
+    template: '%s | HassanWrites',
+
+
+
+  },
+
+
 
   description: 'A Medium-like blog built with Next.js and hosted on GitHub Pages.',
 
+
+
+  keywords: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Blog'],
+
+
+
+  authors: [{ name: 'Hassan' }],
+
+
+
+  openGraph: {
+
+
+
+    title: 'HassanWrites',
+
+
+
+    description: 'A Medium-like blog built with Next.js and hosted on GitHub Pages.',
+
+
+
+    url: 'https://HassanAliMAli.github.io/HassanWrites',
+
+
+
+    siteName: 'HassanWrites',
+
+
+
+    images: [
+
+
+
+      {
+
+
+
+        url: 'https://HassanAliMAli.github.io/HassanWrites/og-image.png',
+
+
+
+        width: 1200,
+
+
+
+        height: 630,
+
+
+
+      },
+
+
+
+    ],
+
+
+
+    locale: 'en_US',
+
+
+
+    type: 'website',
+
+
+
+  },
+
+
+
+  twitter: {
+
+
+
+    card: 'summary_large_image',
+
+
+
+    title: 'HassanWrites',
+
+
+
+    description: 'A Medium-like blog built with Next.js and hosted on GitHub Pages.',
+
+
+
+    creator: '@hassan',
+
+
+
+    images: ['https://HassanAliMAli.github.io/HassanWrites/og-image.png'],
+
+
+
+  },
+
+
+
 };
+
+
+
+
 
 
 
@@ -35,6 +153,14 @@ export default function RootLayout({
   return (
 
     <html lang="en" suppressHydrationWarning={true}>
+
+            <head>
+
+              <link rel="manifest" href="/manifest.json" />
+
+              <script defer data-domain="YOUR_DOMAIN" src="https://plausible.io/js/script.js"></script>
+
+            </head>
 
       <body className={`${inter.className} bg-gray-50 dark:bg-gray-900`}>
 
@@ -63,3 +189,5 @@ export default function RootLayout({
   );
 
 }
+
+
