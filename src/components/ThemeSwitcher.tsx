@@ -3,9 +3,19 @@
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
+import { useButton } from 'react-aria';
+import { useRef } from 'react';
+
 const ThemeSwitcher = () => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  const ref = useRef();
+  const { buttonProps } = useButton(
+    {
+      onPress: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+    },
+    ref
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -17,7 +27,8 @@ const ThemeSwitcher = () => {
 
   return (
     <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      {...buttonProps}
+      ref={ref}
       className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
     >
       {theme === 'dark' ? (

@@ -3,6 +3,8 @@ import path from 'path';
 import matter from 'gray-matter';
 import Link from 'next/link';
 
+import AccessibleLink from '@/components/AccessibleLink';
+
 const BlogPage = () => {
   const blogDir = 'src/content/blog';
   const files = fs.readdirSync(path.join(process.cwd(), blogDir));
@@ -24,7 +26,7 @@ const BlogPage = () => {
         {posts.map(post => (
           <div key={post.slug}>
             <h2 className="text-2xl font-bold">
-              <Link href={`/blog/${post.slug}`}>{post.frontmatter.title}</Link>
+              <AccessibleLink href={`/blog/${post.slug}`}>{post.frontmatter.title}</AccessibleLink>
             </h2>
             <p className="text-gray-600 dark:text-gray-400">{post.frontmatter.description}</p>
             <div className="text-sm text-gray-500 dark:text-gray-500 mt-2">

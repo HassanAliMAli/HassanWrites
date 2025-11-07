@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import matter from 'gray-matter';
 
+import AccessibleLink from './AccessibleLink';
+
 const RelatedPosts = ({ currentPost }) => {
   const [relatedPosts, setRelatedPosts] = useState([]);
 
@@ -36,7 +38,7 @@ const RelatedPosts = ({ currentPost }) => {
         {relatedPosts.map(post => (
           <div key={post.slug} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
             <h3 className="text-xl font-bold">
-              <Link href={`/blog/${post.slug}`}>{post.frontmatter.title}</Link>
+              <AccessibleLink href={`/blog/${post.slug}`}>{post.frontmatter.title}</AccessibleLink>
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mt-2">{post.frontmatter.description}</p>
           </div>
