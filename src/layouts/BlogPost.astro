@@ -8,6 +8,7 @@ const { frontmatter } = Astro.props;
 <Layout title={frontmatter.title}>
   <article>
     <h1>{frontmatter.title}</h1>
+    {frontmatter.image && <img src={frontmatter.image} alt="Post Image" />}
     <p>Published on: {frontmatter.pubDate.toString().slice(0,10)}</p>
     <p><em>{frontmatter.description}</em></p>
     <hr />
