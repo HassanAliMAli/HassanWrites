@@ -5,8 +5,8 @@
   "description": "A Medium-like blog built with Next.js and deployed on GitHub Pages",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run build:scripts && npm run build:rss && npm run build:search",
     "build": "next build --webpack",
-    "postbuild": "npm run build:scripts && npm run build:rss && npm run build:search",
     "build:scripts": "tsc --project tsconfig.script.json",
     "build:rss": "node dist/generate-rss.js > public/rss.xml",
     "build:search": "node dist/generate-search-index.js",
