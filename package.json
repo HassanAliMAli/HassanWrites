@@ -12,7 +12,8 @@
     "build:search": "node dist/generate-search-index.js",
     "start": "next start",
     "lint": "next lint",
-    "analyze": "cross-env ANALYZE=true next build"
+    "analyze": "cross-env ANALYZE=true next build",
+    "deploy": "npm run build && gh-pages -d out"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
@@ -42,6 +43,7 @@
     "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
+    "gh-pages": "^6.3.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5"

@@ -3,8 +3,8 @@
 
 const nextConfig = {
   output: 'export',
-  // basePath: '/HassanWrites',
-  // assetPrefix: '/HassanWrites/',
+  basePath: '/HassanWrites',
+  assetPrefix: '/HassanWrites/',
   reactCompiler: true,
   serverExternalPackages: ['flexsearch'],
   turbopack: {},
