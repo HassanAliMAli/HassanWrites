@@ -1,12 +1,10 @@
-
 backend:
   name: github
-  repo: HassanAliMAli/HassanWrites # e.g. decap-projects/decap-cms-astro-demo
-  branch: main # Branch to update (optional; defaults to master)
-  base_url: https://HassanAliMAli.github.io/HassanWrites
+  repo: HassanAliMAli/HassanWrites
+  branch: master
 
-media_folder: "src/assets"
-public_folder: "/assets"
+media_folder: "public/images"
+public_folder: "/images"
 
 collections:
   - name: "blog"
