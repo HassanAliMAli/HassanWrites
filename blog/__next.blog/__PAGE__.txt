@@ -1,6 +1,0 @@
-1:"$Sreact.fragment"
-2:I[3709,["549","static/chunks/549-de178229b97c5a57.js","831","static/chunks/app/blog/page-1d3126c2c67c371f.js"],"default"]
-3:I[8937,[],"OutletBoundary"]
-4:"$Sreact.suspense"
-0:{"buildId":"EQfW0tfLjzcpP2ClcJ-AM","rsc":["$","$1","c",{"children":[["$","div",null,{"children":[["$","h1",null,{"className":"text-4xl font-bold mb-8","children":"Blog"}],["$","div",null,{"className":"space-y-8","children":[["$","div","hello-world",{"children":[["$","h2",null,{"className":"text-2xl font-bold","children":["$","$L2",null,{"href":"/blog/hello-world","children":"Hello World"}]}],["$","p",null,{"className":"text-gray-600 dark:text-gray-400","children":"This is the first blog post."}],["$","div",null,{"className":"text-sm text-gray-500 dark:text-gray-500 mt-2","children":[["$","span",null,{"children":"2025-11-07"}],["$","span",null,{"className":"mx-2","children":"•"}],["$","span",null,{"children":"Hassan"}]]}]]}]]}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
-5:null
