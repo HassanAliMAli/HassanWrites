@@ -12,7 +12,6 @@ function generateRssFeed() {
     const siteUrl = 'https://HassanAliMAli.github.io/HassanWrites';
     const blogDir = 'src/content/blog';
     const files = fs_1.default.readdirSync(path_1.default.join(process.cwd(), blogDir));
-    console.log('Files:', files);
     const posts = files.map(filename => {
         const filePath = path_1.default.join(process.cwd(), blogDir, filename);
         const fileContent = fs_1.default.readFileSync(filePath, 'utf-8');
@@ -21,21 +20,21 @@ function generateRssFeed() {
             slug: filename.replace('.md', ''),
             frontmatter: data,
         };
-    });
-    console.log('Posts:', posts);
+    }).sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
     const feed = new rss_1.default({
         title: 'HassanWrites',
         description: 'A Medium-like blog built with Next.js and hosted on GitHub Pages.',
         feed_url: `${siteUrl}/rss.xml`,
-        site_url: siteUrl,
+        site_url: `${siteUrl}/`,
         language: 'en',
+        pubDate: new Date(),
     });
-    console.log('Feed object:', feed);
     posts.forEach(post => {
         feed.item({
             title: post.frontmatter.title,
             description: post.frontmatter.description,
             url: `${siteUrl}/blog/${post.slug}`,
+            guid: `${siteUrl}/blog/${post.slug}`,
             date: new Date(post.frontmatter.pubDate),
             author: post.frontmatter.author,
         });
