@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[1163,["977","static/chunks/app/contact/page-ccd1740df0d9057f.js"],"default"]
+3:I[8937,[],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"buildId":"ubtnLXhChsdrnSSig9F1t","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"container mx-auto px-4 py-8","children":[["$","h1",null,{"className":"text-4xl font-bold mb-4","children":"Contact Us"}],["$","p",null,{"className":"text-lg mb-8","children":"Have a question or want to work together? Fill out the form below and we'll get back to you as soon as possible."}],["$","$L2",null,{}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+5:null
