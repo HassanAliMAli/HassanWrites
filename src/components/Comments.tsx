@@ -10,9 +10,9 @@ const Comments = () => {
     <div className="mt-12">
       <Giscus
         repo="HassanAliMAli/HassanWrites"
-        repoId="" // You need to get this from the Giscus website
+        repoId="R_kgDOQMfVUQ" // You need to get this from the Giscus website
         category="Announcements"
-        categoryId="" // You need to get this from the Giscus website
+        categoryId="DIC_kwDOQMfVUc4CxXAD" // You need to get this from the Giscus website
         mapping="pathname"
         reactionsEnabled="1"
         emitMetadata="0"
