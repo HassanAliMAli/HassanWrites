@@ -1,0 +1,29 @@
+
+> temp_app@0.0.0 build
+> vite build
+
+[36mvite v7.2.4 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2070 modules transformed.
+Γ£ù Build failed in 3.51s
+error during build:
+src/layouts/MainLayout.jsx (3:9): "Header" is not exported by "src/components/layout/Header.jsx", imported by "src/layouts/MainLayout.jsx".
+file: C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/src/layouts/MainLayout.jsx:3:9
+
+1: import React from 'react';
+2: import { Outlet } from 'react-router-dom';
+3: import { Header } from '@/components/layout/Header';
+            ^
+4: import { Footer } from '@/components/layout/Footer';
+5: import { ToastProvider } from '@/components/ui/Toast';
+
+    at getRollupError (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:16956:16)
+    at Module.traceVariable (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:17412:29)
+    at ModuleScope.findVariable (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:15076:39)
+    at ReturnValueScope.findVariable (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:5649:38)
+    at FunctionBodyScope.findVariable (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:5649:38)
+    at Identifier.bind (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:5423:40)
+    at CallExpression.bind (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
+    at CallExpression.bind (file:///C:/Users/AlM1GhTy/Desktop/Development/Hassan_Writes/node_modules/rollup/dist/es/shared/node-entry.js:12123:15)

@@ -1,0 +1,15 @@
+.article-shell {
+    width: 100%;
+    max-width: 680px;
+    /* Optimal reading width */
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+    font-size: 1.125rem;
+    line-height: 1.75;
+}
+
+@media (min-width: 768px) {
+    .article-shell {
+        padding: var(--space-12) var(--space-6);
+    }
+}

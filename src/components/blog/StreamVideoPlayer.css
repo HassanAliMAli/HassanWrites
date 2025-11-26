@@ -1,0 +1,48 @@
+.stream-player-wrapper {
+    width: 100%;
+    margin: var(--space-6) 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-md);
+}
+
+.stream-player-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
+    background-color: #000;
+}
+
+.stream-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.stream-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.stream-play-icon {
+    margin-bottom: var(--space-2);
+    opacity: 0.8;
+    transition: opacity var(--transition-fast);
+}
+
+.stream-placeholder:hover .stream-play-icon {
+    opacity: 1;
+}

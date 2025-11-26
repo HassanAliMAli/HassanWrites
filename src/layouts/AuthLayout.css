@@ -1,0 +1,27 @@
+.auth-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-background);
+}
+
+.auth-layout__header {
+    padding: var(--space-6);
+    display: flex;
+    justify-content: center;
+}
+
+.auth-layout__logo {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.auth-layout__content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}

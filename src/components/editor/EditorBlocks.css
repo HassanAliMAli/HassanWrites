@@ -1,0 +1,203 @@
+.editor-textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    background: transparent;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: var(--color-text-main);
+    outline: none;
+    padding: var(--space-2) 0;
+}
+
+.editor-heading {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    outline: none;
+    margin: var(--space-6) 0 var(--space-4);
+}
+
+.editor-quote-wrapper {
+    display: flex;
+    gap: var(--space-4);
+    margin: var(--space-6) 0;
+    padding-left: var(--space-4);
+    border-left: 4px solid var(--color-primary);
+}
+
+.editor-quote-icon {
+    color: var(--color-text-muted);
+    padding-top: var(--space-2);
+}
+
+.editor-quote {
+    width: 100%;
+    border: none;
+    resize: none;
+    background: transparent;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--color-text-main);
+    outline: none;
+}
+
+.editor-media-placeholder {
+    margin: var(--space-8) 0;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    background-color: var(--color-surface-hover);
+}
+
+.editor-media-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-text-muted);
+    gap: var(--space-2);
+}
+
+.editor-media-preview {
+    width: 100%;
+    border-radius: var(--radius-md);
+}
+
+/* Code Block */
+.editor-block-wrapper {
+    position: relative;
+    margin: var(--space-4) 0;
+}
+
+.editor-code-icon {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    color: #6b7280;
+    pointer-events: none;
+}
+
+.editor-code {
+    width: 100%;
+    background-color: #1f2937;
+    color: #e5e7eb;
+    font-family: var(--font-mono);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid #374151;
+    resize: none;
+    min-height: 100px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.editor-code:focus {
+    outline: 2px solid var(--color-primary);
+    border-color: transparent;
+}
+
+/* Callout Block */
+.editor-callout {
+    display: flex;
+    gap: var(--space-4);
+    background-color: var(--color-surface-active);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-warning);
+    margin: var(--space-4) 0;
+}
+
+.callout-icon {
+    color: var(--color-warning);
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2px;
+}
+
+.editor-callout-text {
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    color: var(--color-text-main);
+    resize: none;
+    font-family: var(--font-sans);
+    padding: 0;
+    line-height: 1.5;
+}
+
+.editor-callout-text:focus {
+    outline: none;
+}
+
+/* Embed Block */
+.editor-embed {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin: var(--space-4) 0;
+    background-color: var(--color-surface);
+}
+
+.editor-embed-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-muted);
+}
+
+.editor-embed-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    color: var(--color-text-main);
+}
+
+.editor-embed-input:focus {
+    outline: none;
+}
+
+.embed-preview {
+    padding: var(--space-8);
+    background-color: var(--color-surface-active);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Gallery Block */
+.editor-gallery {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+    text-align: center;
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-hover);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin: var(--space-4) 0;
+}
+
+.editor-gallery:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-surface-active);
+    color: var(--color-primary);
+}
+
+.gallery-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

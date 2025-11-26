@@ -1,0 +1,41 @@
+.clap-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all 0.2s ease;
+}
+
+.clap-button.clapped {
+    color: var(--color-primary);
+    background-color: var(--color-surface-hover);
+}
+
+.clap-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clap-icon {
+    font-size: 1.25rem;
+    transition: transform 0.2s ease;
+}
+
+.clap-icon.animate {
+    animation: clapPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes clapPop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.5) rotate(-15deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+    }
+}
