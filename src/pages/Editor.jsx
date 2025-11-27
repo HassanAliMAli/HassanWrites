@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     ArrowLeft, Image as ImageIcon, Type, Video as VideoIcon,
     Quote as QuoteIcon, Heading as HeadingIcon,
@@ -8,7 +8,6 @@ import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/components/ui/toast-context';
-import { api } from '@/lib/api';
 import {
     ParagraphBlock, HeadingBlock, QuoteBlock, ImageBlock,
     VideoBlock, CodeBlock, CalloutBlock, EmbedBlock, GalleryBlock
@@ -26,13 +25,11 @@ const Editor = () => {
     const { addToast } = useToast();
     const fileInputRef = useRef(null);
     const wsRef = useRef(null);
-    const { slug } = useParams(); // Assuming we edit by slug or ID, for new posts we might need a session ID
-    // For Phase 2, let's assume we are editing a draft with a known ID or creating a new session
-    // We'll generate a random session ID if not provided
-    const sessionId = useRef(crypto.randomUUID()).current;
+    const { slug } = useParams();
+    const [sessionId] = useState(() => slug || crypto.randomUUID());
 
     useEffect(() => {
-        // Connect to WebSocket
+        // Connect to WebSocket (Durable Object)
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${protocol}//${window.location.host}/api/editor/session/${sessionId}`;
 
@@ -41,6 +38,7 @@ const Editor = () => {
 
         ws.onopen = () => {
             setIsConnected(true);
+            addToast({ title: 'Connected to session', type: 'success' });
         };
 
         ws.onmessage = (event) => {
@@ -62,18 +60,18 @@ const Editor = () => {
         return () => {
             ws.close();
         };
-    }, []);
+    }, [sessionId, addToast]);
 
     const sendUpdate = (data) => {
         if (wsRef.current?.readyState === WebSocket.OPEN) {
             wsRef.current.send(JSON.stringify({ type: 'update', data }));
             setIsSaving(true);
-            setTimeout(() => setIsSaving(false), 500); // Fake saving indicator
+            setTimeout(() => setIsSaving(false), 500);
         }
     };
 
     const handleAddBlock = (type) => {
-        const newBlock = { id: Date.now().toString(), type, content: '' };
+        const newBlock = { id: crypto.randomUUID(), type, content: '' };
         const newBlocks = [...blocks, newBlock];
         setBlocks(newBlocks);
         sendUpdate({ title, blocks: newBlocks });
@@ -93,7 +91,6 @@ const Editor = () => {
     };
 
     const handleSave = async () => {
-        // Manual save trigger (optional since we autosave)
         sendUpdate({ title, blocks });
         addToast({ title: 'Saved', type: 'success' });
     };

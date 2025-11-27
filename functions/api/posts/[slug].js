@@ -1,7 +1,7 @@
 import { jsonResponse, errorResponse } from '../utils';
 
 // GET /api/posts/[slug]
-export const onRequestGet = async ({ request, env, params }) => {
+export const onRequestGet = async ({ env, params }) => {
     try {
         const { slug } = params;
 

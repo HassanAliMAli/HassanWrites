@@ -11,7 +11,7 @@ destination = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "edgemaster-db"
-database_id = "edgemaster-db-id" # Placeholder: User needs to update this after creation
+database_id = "edgemaster-db-id" # Placeholder
 
 # R2 Bucket Binding
 [[r2_buckets]]
@@ -28,7 +28,23 @@ id = "edgemaster-config-id" # Placeholder
 binding = "BACKEND"
 service = "edgemaster-backend"
 
-# Analytics Engine (Optional but good for observability)
+# Analytics Engine
 [[analytics_engine_datasets]]
 binding = "ANALYTICS"
 dataset = "edgemaster_events"
+
+# Durable Objects
+[[durable_objects.bindings]]
+name = "EDITOR_DO"
+class_name = "EditorSession"
+script_name = "editor-do"
+
+[[durable_objects.bindings]]
+name = "DASHBOARD_DO"
+class_name = "DashboardStats"
+script_name = "dashboard-do"
+
+# Migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["EditorSession", "DashboardStats"]

@@ -29,8 +29,7 @@ export const verifyToken = async (token, secret) => {
         const secretKey = new TextEncoder().encode(secret);
         const { payload } = await jwtVerify(token, secretKey);
         return payload;
-    } catch (error) {
+    } catch {
         return null;
     }
 };
-

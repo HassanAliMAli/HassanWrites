@@ -21,9 +21,12 @@ const Users = lazy(() => import('@/pages/admin/Users'));
 const Campaigns = lazy(() => import('@/pages/admin/Campaigns'));
 const Payouts = lazy(() => import('@/pages/admin/Payouts'));
 
+import AnalyticsTracker from '@/components/AnalyticsTracker';
+
 function App() {
   return (
     <Router>
+      <AnalyticsTracker />
       <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
         <Routes>
           {/* Auth Routes */}

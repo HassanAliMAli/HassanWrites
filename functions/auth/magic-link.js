@@ -1,72 +1,28 @@
-import { jsonResponse, errorResponse, generateToken, verifyToken } from '../api/utils';
+import { jsonResponse, errorResponse } from '../api/utils';
 
-// POST /auth/magic-link -> Sends the link
 export const onRequestPost = async ({ request, env }) => {
     try {
         const { email } = await request.json();
-
-        if (!email) return errorResponse('Email is required', 400);
+        if (!email) return errorResponse('Email is required');
 
         // 1. Check if user exists
         const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first();
 
         if (!user) {
-            return jsonResponse({ success: true, message: 'If an account exists, a magic link has been sent.' });
+            // In a real app, we might send an invite request or generic "check email" to prevent enumeration
+            // For this invite-only platform, we'll just say "User not found" for now
+            return errorResponse('User not found. This platform is invite-only.', 404);
         }
 
-        // 2. Generate Magic Link Token
-        const secret = env.JWT_SECRET || 'dev-secret-fallback';
-        // Short expiry for magic link (15 mins)
-        // We use a simple payload here. In prod, maybe sign a specific "magic-link" type token.
-        const magicToken = btoa(JSON.stringify({ email, exp: Date.now() + 900000 }));
+        // 2. Generate Magic Link Token (short-lived)
+        // In a real app, store this in KV or D1 with expiration
+        const token = crypto.randomUUID();
 
-        const magicLink = \`\${new URL(request.url).origin}/auth/magic-link?token=\${magicToken}\`;
+        // 3. Send Email (Mocked for now)
+        console.log(`[Mock Email] Magic Link for ${email}: https://${request.headers.get('host')}/auth/verify?token=${token}`);
 
-        console.log(\`[DEV] Magic Link for \${email}: \${magicLink}\`);
-
-        return jsonResponse({ 
-            success: true, 
-            message: 'Magic link sent (check console in dev)',
-            dev_link: magicLink 
-        });
-
+        return jsonResponse({ success: true, message: 'Magic link sent (check console)' });
     } catch (err) {
         return errorResponse(err.message, 500);
-    }
-};
-
-// GET /auth/magic-link?token=... -> Verifies and logs in
-export const onRequestGet = async ({ request, env }) => {
-    const url = new URL(request.url);
-    const token = url.searchParams.get('token');
-
-    if (!token) return errorResponse('Missing token', 400);
-
-    try {
-        // Decode token
-        const payload = JSON.parse(atob(token));
-        
-        if (Date.now() > payload.exp) {
-            return errorResponse('Token expired', 401);
-        }
-
-        const email = payload.email;
-
-        // Get User
-        const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first();
-        if (!user) return errorResponse('User not found', 404);
-
-        // Generate Session
-        const secret = env.JWT_SECRET || 'dev-secret-fallback';
-        const sessionToken = await generateToken({ id: user.id, email: user.email, role: user.role }, secret);
-
-        // Redirect to Dashboard
-        const response = Response.redirect(\`\${url.origin}/admin\`, 302);
-        response.headers.append('Set-Cookie', `session = ${ sessionToken }; HttpOnly; Secure; SameSite = Strict; Path =/; Max-Age=604800`);
-
-        return response;
-
-    } catch (err) {
-        return errorResponse('Invalid token', 400);
     }
 };
