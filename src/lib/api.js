@@ -56,7 +56,7 @@ export const api = {
         return res.json();
     },
 
-    publishPost: async (id) => {
+    publishPost: async () => {
         // Assuming we have a publish endpoint or use save with status='published'
         // For now, let's assume savePost handles it or we add a specific endpoint
         // Since we didn't explicitly build a /publish endpoint in Phase 2, we'll use savePost logic
@@ -85,7 +85,7 @@ export const api = {
     },
 
     // Ads (Admin)
-    createCampaign: async (data) => {
+    createCampaign: async () => {
         // Mock for now as Ad Admin API wasn't in Phase 2/3 scope (only Decision Engine)
         return { success: true, id: 'mock-campaign-id' };
     }

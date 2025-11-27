@@ -1,12 +1,13 @@
 import { SignJWT, jwtVerify } from 'jose';
 
-export const jsonResponse = (data, status = 200) => {
+export const jsonResponse = (data, status = 200, extraHeaders = {}) => {
     return new Response(JSON.stringify(data), {
         status,
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*', // Adjust for prod
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            ...extraHeaders
         },
     });
 };

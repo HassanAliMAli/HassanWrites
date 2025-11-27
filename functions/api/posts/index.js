@@ -20,7 +20,9 @@ export const onRequestGet = async ({ request, env }) => {
         const joinParams = status ? [status, limit, offset] : [limit, offset];
         const posts = await env.DB.prepare(joinQuery).bind(...joinParams).all();
 
-        return jsonResponse(posts.results);
+        return jsonResponse(posts.results, 200, {
+            'Cache-Control': 'public, max-age=60, stale-while-revalidate=600'
+        });
     } catch (err) {
         return errorResponse(err.message, 500);
     }

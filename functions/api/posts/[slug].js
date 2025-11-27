@@ -25,7 +25,9 @@ export const onRequestGet = async ({ env, params }) => {
             }
         }
 
-        return jsonResponse({ ...post, content });
+        return jsonResponse({ ...post, content }, 200, {
+            'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600'
+        });
 
     } catch (err) {
         return errorResponse(err.message, 500);
