@@ -1,0 +1,19 @@
+name = "edgemaster-backend"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Objects
+[[durable_objects.bindings]]
+name = "EDITOR_SESSION"
+class_name = "EditorSession"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["EditorSession"]
+
+# D1 Binding (Shared with Pages)
+[[d1_databases]]
+binding = "DB"
+database_name = "edgemaster-db"
+database_id = "edgemaster-db-id" # Placeholder

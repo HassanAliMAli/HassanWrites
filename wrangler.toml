@@ -1,0 +1,34 @@
+name = "edgemaster-blog"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Pages Configuration
+[pages_build_config]
+build_command = "npm run build"
+destination = "dist"
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "edgemaster-db"
+database_id = "edgemaster-db-id" # Placeholder: User needs to update this after creation
+
+# R2 Bucket Binding
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "edgemaster-media"
+
+# KV Namespace Binding
+[[kv_namespaces]]
+binding = "CONFIG_KV"
+id = "edgemaster-config-id" # Placeholder
+
+# Service Binding to Backend Worker
+[[services]]
+binding = "BACKEND"
+service = "edgemaster-backend"
+
+# Analytics Engine (Optional but good for observability)
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "edgemaster_events"

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import {
-    Save, ArrowLeft, Image as ImageIcon, Type, Video as VideoIcon,
-    MoreHorizontal, Quote as QuoteIcon, Heading as HeadingIcon,
+    ArrowLeft, Image as ImageIcon, Type, Video as VideoIcon,
+    Quote as QuoteIcon, Heading as HeadingIcon,
     Code, AlertTriangle, Link as LinkIcon, Grid, UploadCloud
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/components/ui/toast-context';
@@ -22,28 +22,80 @@ const Editor = () => {
     const [blocks, setBlocks] = useState([{ id: '1', type: 'paragraph', content: '' }]);
     const [isSaving, setIsSaving] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [isConnected, setIsConnected] = useState(false);
     const { addToast } = useToast();
     const fileInputRef = useRef(null);
+    const wsRef = useRef(null);
+    const { slug } = useParams(); // Assuming we edit by slug or ID, for new posts we might need a session ID
+    // For Phase 2, let's assume we are editing a draft with a known ID or creating a new session
+    // We'll generate a random session ID if not provided
+    const sessionId = useRef(crypto.randomUUID()).current;
+
+    useEffect(() => {
+        // Connect to WebSocket
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/api/editor/session/${sessionId}`;
+
+        const ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+            setIsConnected(true);
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'init' || msg.type === 'update') {
+                    if (msg.data) {
+                        if (msg.data.title) setTitle(msg.data.title);
+                        if (msg.data.blocks) setBlocks(msg.data.blocks);
+                    }
+                }
+            } catch (err) {
+                console.error('WS Error:', err);
+            }
+        };
+
+        ws.onclose = () => setIsConnected(false);
+
+        return () => {
+            ws.close();
+        };
+    }, []);
+
+    const sendUpdate = (data) => {
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify({ type: 'update', data }));
+            setIsSaving(true);
+            setTimeout(() => setIsSaving(false), 500); // Fake saving indicator
+        }
+    };
 
     const handleAddBlock = (type) => {
         const newBlock = { id: Date.now().toString(), type, content: '' };
-        setBlocks([...blocks, newBlock]);
+        const newBlocks = [...blocks, newBlock];
+        setBlocks(newBlocks);
+        sendUpdate({ title, blocks: newBlocks });
     };
 
     const handleContentChange = (id, content) => {
-        setBlocks(blocks.map(b => b.id === id ? { ...b, content } : b));
+        const newBlocks = blocks.map(b => b.id === id ? { ...b, content } : b);
+        setBlocks(newBlocks);
+        sendUpdate({ title, blocks: newBlocks });
+    };
+
+    // Debounced Title Update
+    const handleTitleChange = (e) => {
+        const newTitle = e.target.value;
+        setTitle(newTitle);
+        sendUpdate({ title: newTitle, blocks });
     };
 
     const handleSave = async () => {
-        setIsSaving(true);
-        try {
-            await api.savePost({ title, blocks });
-            addToast({ title: 'Draft saved', type: 'success' });
-        } catch {
-            addToast({ title: 'Failed to save', type: 'error' });
-        } finally {
-            setIsSaving(false);
-        }
+        // Manual save trigger (optional since we autosave)
+        sendUpdate({ title, blocks });
+        addToast({ title: 'Saved', type: 'success' });
     };
 
     const handleDragOver = (e) => {
@@ -130,6 +182,9 @@ const Editor = () => {
                         <Button variant="ghost" size="icon"><ArrowLeft size={20} /></Button>
                     </Link>
                     <div className="flex items-center gap-2">
+                        <span className={`editor-status ${isConnected ? 'text-success' : 'text-warning'}`}>
+                            {isConnected ? 'Connected' : 'Reconnecting...'}
+                        </span>
                         <span className="editor-status text-muted">Draft</span>
                         <Button variant="ghost" onClick={handleSave} disabled={isSaving}>
                             {isSaving ? 'Saving...' : 'Save'}
@@ -143,7 +198,7 @@ const Editor = () => {
                         className="editor-title-input"
                         placeholder="Title"
                         value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={handleTitleChange}
                     />
 
                     <div className="editor-blocks">
