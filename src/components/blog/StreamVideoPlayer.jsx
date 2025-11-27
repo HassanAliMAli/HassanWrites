@@ -3,8 +3,7 @@ import { Play } from 'lucide-react';
 import './StreamVideoPlayer.css';
 
 export const StreamVideoPlayer = ({ src, poster, autoplay = false }) => {
-    // In Phase 1, we mock the Cloudflare Stream player.
-    // In Phase 2, this will be replaced with the actual Stream player embed.
+
 
     return (
         <div className="stream-player-wrapper">

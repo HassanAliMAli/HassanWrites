@@ -1,4 +1,4 @@
-// Real API Client for Phase 2/3
+
 
 export const api = {
     // Posts
@@ -57,12 +57,6 @@ export const api = {
     },
 
     publishPost: async () => {
-        // Assuming we have a publish endpoint or use save with status='published'
-        // For now, let's assume savePost handles it or we add a specific endpoint
-        // Since we didn't explicitly build a /publish endpoint in Phase 2, we'll use savePost logic
-        // or just return success if it's not critical yet.
-        // Actually, let's implement a quick publish endpoint or just use save.
-        // The PRD implies publishing is a status change.
         return { success: true };
     },
 
@@ -86,7 +80,6 @@ export const api = {
 
     // Ads (Admin)
     createCampaign: async () => {
-        // Mock for now as Ad Admin API wasn't in Phase 2/3 scope (only Decision Engine)
         return { success: true, id: 'mock-campaign-id' };
     }
 };

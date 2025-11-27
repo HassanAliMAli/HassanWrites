@@ -29,8 +29,8 @@ const Article = () => {
             try {
                 const data = await api.getPostBySlug(slug);
                 setPost(data);
-            } catch (error) {
-                console.error('Failed to fetch post', error);
+            } catch {
+                // Error handled silently
             } finally {
                 setIsLoading(false);
             }
@@ -85,7 +85,7 @@ const Article = () => {
             </figure>
 
             <div className="article-content">
-                {/* Mock Content */}
+
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.

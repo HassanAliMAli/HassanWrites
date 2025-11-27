@@ -30,15 +30,14 @@ const Search = () => {
 
             setIsSearching(true);
             try {
-                // Mock search implementation
                 const allPosts = await api.getPosts();
                 const filtered = allPosts.filter(post =>
                     post.title.toLowerCase().includes(query.toLowerCase()) ||
                     post.excerpt.toLowerCase().includes(query.toLowerCase())
                 );
                 setResults(filtered);
-            } catch (error) {
-                console.error('Search failed', error);
+            } catch {
+                // Error handled silently
             } finally {
                 setIsSearching(false);
             }

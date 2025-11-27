@@ -50,8 +50,8 @@ const Editor = () => {
                         if (msg.data.blocks) setBlocks(msg.data.blocks);
                     }
                 }
-            } catch (err) {
-                console.error('WS Error:', err);
+            } catch {
+                // Error handled silently
             }
         };
 

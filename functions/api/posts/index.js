@@ -1,6 +1,5 @@
 import { jsonResponse, errorResponse, verifyToken } from '../utils';
 
-// GET /api/posts - List posts
 export const onRequestGet = async ({ request, env }) => {
     try {
         const url = new URL(request.url);
@@ -28,10 +27,8 @@ export const onRequestGet = async ({ request, env }) => {
     }
 };
 
-// POST /api/posts - Create new draft
 export const onRequestPost = async ({ request, env }) => {
     try {
-        // 1. Auth Check
         const cookie = request.headers.get('Cookie');
         const token = cookie?.split('session=')[1]?.split(';')[0];
         if (!token) return errorResponse('Unauthorized', 401);

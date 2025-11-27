@@ -11,7 +11,6 @@ import { generatePersonSchema } from '@/lib/seo-utils';
 import './Profile.css';
 
 const Profile = () => {
-    // Mock data
     const author = {
         id: '1',
         name: 'Hassan',

@@ -15,13 +15,11 @@ export const onRequestPost = async ({ request, env }) => {
             meta
         };
 
-        // Store in KV
         await env.CONFIG_KV.put(`log:${timestamp}:${logId}`, JSON.stringify(logEntry), { expirationTtl: 604800 });
 
         return jsonResponse({ success: true, id: logId });
 
-    } catch (err) {
-        console.error('Logging Error:', err);
+    } catch {
         return jsonResponse({ success: false }, 500);
     }
 };

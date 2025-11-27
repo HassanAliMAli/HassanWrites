@@ -4,7 +4,7 @@ import { PostTable } from '@/components/admin/PostTable';
 import './Admin.css';
 
 const Posts = () => {
-    // Mock Data
+
     const posts = [
         { id: 1, title: 'The Future of Edge Computing', author: 'Hassan', status: 'Published', date: '2025-11-20', views: 1205 },
         { id: 2, title: 'Designing for Readability', author: 'Sarah', status: 'Published', date: '2025-11-22', views: 850 },

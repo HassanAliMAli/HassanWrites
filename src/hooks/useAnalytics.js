@@ -20,12 +20,11 @@ export const useAnalytics = () => {
                     }
                 })
             });
-        } catch (err) {
-            console.error('Analytics Error:', err);
+        } catch {
+            // Error handled silently
         }
     }, []);
 
-    // Automatic Page View Tracking
     useEffect(() => {
         trackEvent('pageview');
     }, [location.pathname, trackEvent]);

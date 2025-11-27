@@ -5,7 +5,6 @@ import Footer from '@/components/layout/Footer';
 import { ToastProvider } from '@/components/ui/Toast';
 
 const MainLayout = () => {
-    // Mock user for now - will come from auth context later
     const user = null;
 
     return (

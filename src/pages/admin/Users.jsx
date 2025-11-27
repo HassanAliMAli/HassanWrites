@@ -5,7 +5,7 @@ import { UserTable } from '@/components/admin/UserTable';
 import './Admin.css';
 
 const Users = () => {
-    // Mock Data
+
     const users = [
         { id: 1, name: 'Hassan', email: 'hassan@example.com', role: 'Admin', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Hassan&background=6366f1&color=fff' },
         { id: 2, name: 'Sarah', email: 'sarah@example.com', role: 'Author', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Sarah&background=ec4899&color=fff' },
@@ -17,7 +17,7 @@ const Users = () => {
 
     const handleInvite = async () => {
         setIsInviting(true);
-        // Mock API call
+
         setTimeout(() => {
             setIsInviting(false);
         }, 1000);

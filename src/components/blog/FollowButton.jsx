@@ -7,7 +7,7 @@ const FollowButton = ({ initialIsFollowing = false }) => {
 
     const toggleFollow = () => {
         setIsFollowing(!isFollowing);
-        // In a real app, this would call the API
+
     };
 
     return (

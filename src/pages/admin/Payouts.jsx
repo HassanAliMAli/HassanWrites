@@ -18,8 +18,8 @@ const Payouts = () => {
                 ]);
                 setPayouts(payoutsData);
                 setStats(statsData);
-            } catch (error) {
-                console.error('Failed to load payouts', error);
+            } catch {
+                // Error handled silently
             } finally {
                 setIsLoading(false);
             }

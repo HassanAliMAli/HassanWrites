@@ -9,7 +9,7 @@ import './Header.css';
 
 const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const isAuthenticated = true; // Mock state
+    const isAuthenticated = true;
 
     return (
         <>

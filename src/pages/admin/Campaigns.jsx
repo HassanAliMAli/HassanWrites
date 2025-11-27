@@ -16,8 +16,8 @@ const Campaigns = () => {
             try {
                 const data = await api.getCampaigns();
                 setCampaigns(data);
-            } catch (error) {
-                console.error('Failed to load campaigns', error);
+            } catch {
+                // Error handling
             } finally {
                 setIsLoading(false);
             }
@@ -32,10 +32,11 @@ const Campaigns = () => {
             const updated = await api.getCampaigns();
             setCampaigns(updated);
             setShowForm(false);
-        } catch (error) {
-            console.error('Failed to create campaign', error);
+        } catch {
+            // Error handling
         }
-    };
+    }
+
 
     if (showForm) {
         return (

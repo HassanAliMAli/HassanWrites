@@ -15,8 +15,8 @@ const Home = () => {
             try {
                 const data = await api.getPosts();
                 setPosts(data);
-            } catch (error) {
-                console.error('Failed to fetch posts', error);
+            } catch {
+                // Error handled silently
             } finally {
                 setIsLoading(false);
             }

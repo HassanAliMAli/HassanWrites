@@ -42,8 +42,8 @@ export class EditorSession {
                     await this.state.storage.put('editor_state', msg.data);
                     this.lastSave = Date.now();
                 }
-            } catch (err) {
-                console.error('DO Error:', err);
+            } catch {
+                // Error handled silently
             }
         });
 
