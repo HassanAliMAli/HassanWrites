@@ -9,7 +9,7 @@ export function initializeStripe(env) {
     return env.STRIPE_SECRET_KEY;
 }
 
-export function verifyStripeWebhook(request, env) {
+export function verifyStripeWebhook(request) {
     const signature = request.headers.get('stripe-signature');
 
     if (!signature) {

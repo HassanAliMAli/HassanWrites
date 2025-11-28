@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+
 import { generateMagicToken } from '../utils/auth.js';
 import { jsonResponse } from '../utils.js';
 
@@ -36,7 +36,7 @@ export async function onRequestPost(context) {
         const magicLink = `${env.SITE_URL}/auth/verify?token=${token}`;
 
         // TODO: Send email with magic link
-        console.log(`Magic link generated for ${email}: ${magicLink}`);
+
 
         // For now, return the link (in production, email it and return success)
         return jsonResponse({

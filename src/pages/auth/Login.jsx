@@ -76,7 +76,7 @@ const Login = () => {
                     navigate('/');
                 }
             }, 500);
-        } catch (error) {
+        } catch {
             addToast({
                 title: 'Error',
                 description: 'Login failed. Please try again.',

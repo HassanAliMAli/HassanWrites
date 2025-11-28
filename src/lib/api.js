@@ -56,8 +56,26 @@ export const api = {
         return res.json();
     },
 
-    publishPost: async () => {
-        return { success: true };
+    updatePost: async (slug, postData) => {
+        const res = await fetch(`/api/posts/${slug}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(postData)
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Failed to update post');
+        }
+        return res.json();
+    },
+
+    publishPost: async (slug, postData) => {
+        // If slug exists, it's an update. If not, it's a create (savePost handles create)
+        if (slug) {
+            return api.updatePost(slug, { ...postData, status: 'published' });
+        } else {
+            return api.savePost({ ...postData, status: 'published' });
+        }
     },
 
     // Media
@@ -118,6 +136,14 @@ export const api = {
             credentials: 'include'
         });
         if (!res.ok) throw new Error('Failed to delete user');
+        return res.json();
+    },
+
+    getSubscribers: async () => {
+        // In a real implementation, this would hit a dedicated /api/subscribers endpoint
+        // For now, we reuse the users endpoint as it contains subscriber info
+        const res = await fetch('/api/users', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch subscribers');
         return res.json();
     }
 };

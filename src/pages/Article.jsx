@@ -71,6 +71,7 @@ const Article = () => {
                             </div>
                             <div className="text-sm text-muted">
                                 {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(post.publishedAt))} · {post.readTime} read
+                                {post.is_premium === 1 && <Badge variant="default" className="ml-2">Premium</Badge>}
                             </div>
                         </div>
                     </div>
@@ -85,33 +86,19 @@ const Article = () => {
             </figure>
 
             <div className="article-content">
-
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                <h2>The Core Concept</h2>
-                <p>
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-
-                <div className="my-8">
-                    <StreamVideoPlayer src="https://customer-m033z5x00ks6nunl.cloudflarestream.com/b236bde30eb07b9d01318c4060ea1120/manifest/video.m3u8" poster="https://customer-m033z5x00ks6nunl.cloudflarestream.com/b236bde30eb07b9d01318c4060ea1120/thumbnails/thumbnail.jpg" />
-                    <p className="text-sm text-muted text-center mt-2">Figure 1: Demonstration of Cloudflare Stream integration</p>
-                </div>
-
-                <blockquote>
-                    "Simplicity is the ultimate sophistication." - Leonardo da Vinci
-                </blockquote>
-                <p>
-                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-                    totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-                </p>
+                {/* If premium and no access, show excerpt only */}
+                {post.is_premium === 1 && !post.has_access ? (
+                    <div className="premium-preview">
+                        <div dangerouslySetInnerHTML={{ __html: post.content || post.excerpt }} />
+                        <div className="fade-out-overlay"></div>
+                    </div>
+                ) : (
+                    <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                )}
             </div>
 
             <div className="article-tags">
-                {post.tags.map(tag => (
+                {post.tags && post.tags.map(tag => (
                     <Badge key={tag} variant="secondary">{tag}</Badge>
                 ))}
             </div>
@@ -129,7 +116,10 @@ const Article = () => {
                 </div>
             </div>
 
-            <Paywall />
+            {post.is_premium === 1 && !post.has_access && (
+                <Paywall tier={post.subscription_tier || 'premium'} />
+            )}
+
             <Comments />
             <div className="fixed bottom-8 right-8 z-50">
                 <ReaderModeToggle />

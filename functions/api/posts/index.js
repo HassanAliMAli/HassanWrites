@@ -37,7 +37,7 @@ export const onRequestPost = async ({ request, env }) => {
         const user = await verifyToken(token, secret);
         if (!user) return errorResponse('Invalid token', 401);
 
-        const { title, slug, excerpt, tags } = await request.json();
+        const { title, slug, excerpt, tags, is_premium } = await request.json();
 
         if (!title || !slug) return errorResponse('Title and Slug are required', 400);
 
@@ -45,8 +45,8 @@ export const onRequestPost = async ({ request, env }) => {
         const now = Math.floor(Date.now() / 1000);
 
         await env.DB.prepare(
-            `INSERT INTO posts (id, author_id, title, slug, excerpt, tags, status, created_at, updated_at) 
-             VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?)`
+            `INSERT INTO posts (id, author_id, title, slug, excerpt, tags, is_premium, status, created_at, updated_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?)`
         ).bind(
             id,
             user.id,
@@ -54,6 +54,7 @@ export const onRequestPost = async ({ request, env }) => {
             slug,
             excerpt || '',
             JSON.stringify(tags || []),
+            is_premium ? 1 : 0,
             now,
             now
         ).run();

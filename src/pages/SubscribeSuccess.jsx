@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -9,7 +9,7 @@ import './Membership.css';
 const SubscribeSuccess = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+
 
     useEffect(() => {
         // Get session_id from URL (Stripe redirects with this)

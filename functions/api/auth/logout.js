@@ -1,8 +1,6 @@
-import { jsonResponse } from
 
-    '../utils';
 
-export const onRequestPost = async ({ request }) => {
+export const onRequestPost = async () => {
     const headers = new Headers();
     headers.append('Set-Cookie', 'session=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict');
 

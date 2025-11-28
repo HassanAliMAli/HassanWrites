@@ -1,4 +1,4 @@
-import { jsonResponse, errorResponse } from '../utils.js';
+import { jsonResponse, errorResponse, verifyToken } from '../utils.js';
 import { validateSubscriberSession, hasAccessToContent } from '../utils/auth.js';
 
 export const onRequestGet = async ({ request, env, params }) => {
@@ -77,6 +77,62 @@ export const onRequestGet = async ({ request, env, params }) => {
 
     } catch (err) {
         console.error('Error fetching post:', err);
+        return errorResponse(err.message, 500);
+    }
+};
+
+export const onRequestPut = async ({ request, env, params }) => {
+    try {
+        const { slug } = params;
+        const cookie = request.headers.get('Cookie');
+        const token = cookie?.split('session=')[1]?.split(';')[0];
+        if (!token) return errorResponse('Unauthorized', 401);
+
+        const secret = env.JWT_SECRET || 'dev-secret-fallback';
+        const user = await verifyToken(token, secret);
+        if (!user) return errorResponse('Invalid token', 401);
+
+        const { title, excerpt, tags, is_premium, status } = await request.json();
+        const now = Math.floor(Date.now() / 1000);
+
+        // Build update query dynamically
+        let query = 'UPDATE posts SET updated_at = ?';
+        const queryParams = [now];
+
+        if (title !== undefined) {
+            query += ', title = ?';
+            queryParams.push(title);
+        }
+        if (excerpt !== undefined) {
+            query += ', excerpt = ?';
+            queryParams.push(excerpt);
+        }
+        if (tags !== undefined) {
+            query += ', tags = ?';
+            queryParams.push(JSON.stringify(tags));
+        }
+        if (is_premium !== undefined) {
+            query += ', is_premium = ?';
+            queryParams.push(is_premium ? 1 : 0);
+        }
+        if (status !== undefined) {
+            query += ', status = ?';
+            queryParams.push(status);
+        }
+
+        query += ' WHERE slug = ? AND author_id = ?';
+        queryParams.push(slug, user.id);
+
+        const result = await env.DB.prepare(query).bind(...queryParams).run();
+
+        if (result.meta.changes === 0) {
+            return errorResponse('Post not found or unauthorized', 404);
+        }
+
+        return jsonResponse({ success: true, slug });
+
+    } catch (err) {
+        console.error('Error updating post:', err);
         return errorResponse(err.message, 500);
     }
 };

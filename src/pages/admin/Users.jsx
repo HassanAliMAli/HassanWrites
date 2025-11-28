@@ -14,11 +14,7 @@ const Users = () => {
     const [inviteData, setInviteData] = useState({ email: '', name: '', role: 'reader' });
     const { addToast } = useToast();
 
-    useEffect(() => {
-        loadUsers();
-    }, []);
-
-    const loadUsers = async () => {
+    const loadUsers = React.useCallback(async () => {
         try {
             const data = await api.getUsers();
             setUsers(data);
@@ -27,7 +23,11 @@ const Users = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [addToast]);
+
+    useEffect(() => {
+        loadUsers();
+    }, [loadUsers]);
 
     const handleInvite = async (e) => {
         e.preventDefault();

@@ -201,7 +201,7 @@ const Membership = () => {
                     </div>
                 </div>
             </div>
-        </div >
+
         </>
     );
 };

@@ -13,10 +13,12 @@
     "aws4fetch": "^1.0.20",
     "jose": "^6.1.2",
     "lucide-react": "^0.554.0",
+    "nanoid": "^5.0.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-helmet-async": "^2.0.5",
-    "react-router-dom": "^7.9.6"
+    "react-router-dom": "^7.9.6",
+    "stripe": "^14.14.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

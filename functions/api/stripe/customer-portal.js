@@ -1,8 +1,8 @@
-import Stripe from 'stripe';
+
 import { jsonResponse } from '../utils.js';
 
 export async function onRequestPost(context) {
-    const { request, env } = context;
+    const { request } = context;
 
     try {
         // Get subscriber session from cookie
@@ -14,7 +14,7 @@ export async function onRequestPost(context) {
         }
 
         // Extract token (simplified - in production use JWT verification)
-        const token = sessionCookie.split('=')[1];
+        // const token = sessionCookie.split('=')[1];
 
         // TODO: Verify JWT and get subscriber_id
         // For now, we'll extract from token payload

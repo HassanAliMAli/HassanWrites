@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Mail, Search, Download, Users } from 'lucide-react';
+import { api } from '@/lib/api';
 import './Admin.css';
 
 const Subscribers = () => {
@@ -11,15 +12,21 @@ const Subscribers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterTier, setFilterTier] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Mock data - replace with API call
     useEffect(() => {
-        // TODO: Fetch from /api/subscribers when implemented
-        setSubscribers([
-            { id: '1', email: 'user1@example.com', subscription_tier: 'premium', subscription_status: 'active', created_at: Date.now() - 30 * 24 * 60 * 60 * 1000 },
-            { id: '2', email: 'user2@example.com', subscription_tier: 'newsletter', subscription_status: 'active', created_at: Date.now() - 15 * 24 * 60 * 60 * 1000 },
-            { id: '3', email: 'user3@example.com', subscription_tier: 'premium', subscription_status: 'canceled', created_at: Date.now() - 60 * 24 * 60 * 60 * 1000 },
-        ]);
+        const fetchSubscribers = async () => {
+            try {
+                const data = await api.getSubscribers();
+                setSubscribers(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error('Failed to fetch subscribers:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchSubscribers();
     }, []);
 
     const filteredSubscribers = subscribers.filter(sub => {
@@ -160,7 +167,11 @@ const Subscribers = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredSubscribers.map((subscriber) => (
+                                {isLoading ? (
+                                    <tr>
+                                        <td colSpan="5" className="p-8 text-center text-muted">Loading subscribers...</td>
+                                    </tr>
+                                ) : filteredSubscribers.map((subscriber) => (
                                     <tr key={subscriber.id} className="border-b hover:bg-muted/50">
                                         <td className="p-3">{subscriber.email}</td>
                                         <td className="p-3">
@@ -187,7 +198,7 @@ const Subscribers = () => {
                             </tbody>
                         </table>
 
-                        {filteredSubscribers.length === 0 && (
+                        {!isLoading && filteredSubscribers.length === 0 && (
                             <div className="text-center py-12 text-muted">
                                 No subscribers found
                             </div>
