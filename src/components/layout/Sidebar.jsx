@@ -3,16 +3,19 @@ import { createPortal } from 'react-dom';
 import { X, Home, Search, User, PenTool, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/context/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
+    const { isAuthenticated, user } = useAuth();
+
     if (!isOpen) return null;
 
     return createPortal(
         <div className="sidebar-overlay" onClick={onClose}>
             <div className="sidebar-content" onClick={e => e.stopPropagation()}>
                 <div className="sidebar-header">
-                    <span className="sidebar-logo">EdgeMaster</span>
+                    <span className="sidebar-logo">HassanWrites</span>
                     <Button variant="ghost" size="icon" onClick={onClose}>
                         <X size={24} />
                     </Button>
@@ -27,10 +30,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <Search size={20} />
                         <span>Search</span>
                     </Link>
-                    <Link to="/profile" className="sidebar-link" onClick={onClose}>
-                        <User size={20} />
-                        <span>Profile</span>
-                    </Link>
+                    {isAuthenticated && (
+                        <Link to={`/profile/${user?.name || 'me'}`} className="sidebar-link" onClick={onClose}>
+                            <User size={20} />
+                            <span>Profile</span>
+                        </Link>
+                    )}
                     <Link to="/editor" className="sidebar-link" onClick={onClose}>
                         <PenTool size={20} />
                         <span>Write</span>

@@ -20,7 +20,7 @@ const Invite = () => {
             await api.redeemInvite(token);
             addToast({
                 title: 'Invite accepted',
-                description: 'Welcome to EdgeMaster!',
+                description: 'Welcome to HassanWrites!',
                 type: 'success',
             });
         } catch {
@@ -37,7 +37,7 @@ const Invite = () => {
     return (
         <Card className="auth-card">
             <CardHeader>
-                <CardTitle className="auth-card__title">Join EdgeMaster</CardTitle>
+                <CardTitle className="auth-card__title">Join HassanWrites</CardTitle>
                 <p className="auth-card__subtitle">Enter your invite token to get started</p>
             </CardHeader>
             <CardContent>

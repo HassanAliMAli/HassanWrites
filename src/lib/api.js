@@ -78,8 +78,46 @@ export const api = {
         return res.json();
     },
 
-    // Ads (Admin)
-    createCampaign: async () => {
-        return { success: true, id: 'mock-campaign-id' };
+    getCurrentUser: async () => {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!res.ok) return null;
+        return res.json();
+    },
+
+    logout: async () => {
+        const res = await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+        return res.json();
+    },
+
+    getUsers: async () => {
+        const res = await fetch('/api/users', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch users');
+        return res.json();
+    },
+
+    createUser: async (userData) => {
+        const res = await fetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(userData)
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Failed to create user');
+        }
+        return res.json();
+    },
+
+    deleteUser: async (userId) => {
+        const res = await fetch(`/api/users/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Failed to delete user');
+        return res.json();
     }
 };

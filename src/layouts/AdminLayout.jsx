@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, Users, Settings, LogOut, Megaphone, DollarSign } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ToastProvider } from '@/components/ui/Toast';
 import './AdminLayout.css';
@@ -12,8 +12,7 @@ const AdminLayout = () => {
         { icon: LayoutDashboard, label: 'Overview', path: '/admin' },
         { icon: FileText, label: 'Posts', path: '/admin/posts' },
         { icon: Users, label: 'Users', path: '/admin/users' },
-        { icon: Megaphone, label: 'Campaigns', path: '/admin/campaigns' },
-        { icon: DollarSign, label: 'Payouts', path: '/admin/payouts' },
+        { icon: Users, label: 'Subscribers', path: '/admin/subscribers' },
         { icon: Settings, label: 'Settings', path: '/admin/settings' },
     ];
 
@@ -22,7 +21,7 @@ const AdminLayout = () => {
             <div className="admin-layout">
                 <aside className="admin-sidebar">
                     <div className="admin-sidebar__header">
-                        <Link to="/" className="admin-logo">EdgeMaster</Link>
+                        <Link to="/" className="admin-logo">HassanWrites</Link>
                     </div>
 
                     <nav className="admin-nav">

@@ -237,7 +237,7 @@ const Editor = () => {
                     <div className="serp-preview-card">
                         <div className="serp-preview-header">
                             <span className="serp-icon">G</span>
-                            <span className="serp-domain">edgemaster.io › post › {title.toLowerCase().replace(/\s+/g, '-') || 'url-slug'}</span>
+                            <span className="serp-domain">hassanwrites.com › post › {title.toLowerCase().replace(/\s+/g, '-') || 'url-slug'}</span>
                         </div>
                         <div className="serp-title">{title || 'Page Title'}</div>
                         <div className="serp-desc">

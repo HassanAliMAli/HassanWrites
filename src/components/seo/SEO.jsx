@@ -9,8 +9,8 @@ export const SEO = ({
     twitter,
     type = 'website'
 }) => {
-    const siteName = 'EdgeMaster';
-    const defaultTitle = 'EdgeMaster - The Future of Publishing';
+    const siteName = 'HassanWrites';
+    const defaultTitle = 'HassanWrites - Insights and Stories';
     const defaultDescription = 'A modern publishing platform for the edge era.';
     const defaultImage = 'https://images.unsplash.com/photo-1499750310159-5b5f226932b7?w=1200&h=630&q=80';
 

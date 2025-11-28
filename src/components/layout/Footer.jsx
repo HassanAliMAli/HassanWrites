@@ -8,7 +8,7 @@ const Footer = () => {
             <div className="container footer__container">
                 <div className="footer__content">
                     <div className="footer__brand">
-                        <span className="footer__logo">EdgeMaster</span>
+                        <span className="footer__logo">HassanWrites</span>
                         <p className="footer__tagline">A masterpiece publishing platform.</p>
                     </div>
 
@@ -34,7 +34,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer__bottom">
-                    <p>&copy; {new Date().getFullYear()} EdgeMaster. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} HassanWrites. All rights reserved.</p>
                 </div>
             </div>
         </footer>

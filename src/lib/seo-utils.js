@@ -20,7 +20,7 @@ export const generateArticleSchema = ({
     },
     publisher: {
         '@type': 'Organization',
-        name: 'EdgeMaster',
+        name: 'HassanWrites',
         logo: {
             '@type': 'ImageObject',
             url: 'https://ui-avatars.com/api/?name=Edge+Master&background=000&color=fff', // Placeholder

@@ -7,7 +7,7 @@ const AnalyticsCharts = () => {
         <div className="analytics-grid">
             <Card className="chart-card">
                 <CardHeader>
-                    <CardTitle>Revenue Overview</CardTitle>
+                    <CardTitle>Page Views Overview</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="chart-container">

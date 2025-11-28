@@ -1,38 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { UserTable } from '@/components/admin/UserTable';
-
+import { Input } from '@/components/ui/Input';
+import { useToast } from '@/components/ui/toast-context';
+import { api } from '@/lib/api';
 import './Admin.css';
 
 const Users = () => {
-
-    const users = [
-        { id: 1, name: 'Hassan', email: 'hassan@example.com', role: 'Admin', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Hassan&background=6366f1&color=fff' },
-        { id: 2, name: 'Sarah', email: 'sarah@example.com', role: 'Author', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Sarah&background=ec4899&color=fff' },
-        { id: 3, name: 'John Doe', email: 'john@example.com', role: 'Reader', status: 'Active', avatar: null },
-        { id: 4, name: 'Jane Smith', email: 'jane@example.com', role: 'Reader', status: 'Inactive', avatar: null },
-    ];
-
+    const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isInviting, setIsInviting] = useState(false);
+    const [showInviteForm, setShowInviteForm] = useState(false);
+    const [inviteData, setInviteData] = useState({ email: '', name: '', role: 'reader' });
+    const { addToast } = useToast();
 
-    const handleInvite = async () => {
+    useEffect(() => {
+        loadUsers();
+    }, []);
+
+    const loadUsers = async () => {
+        try {
+            const data = await api.getUsers();
+            setUsers(data);
+        } catch {
+            addToast({ title: 'Error', description: 'Failed to load users', type: 'error' });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleInvite = async (e) => {
+        e.preventDefault();
         setIsInviting(true);
 
-        setTimeout(() => {
+        try {
+            await api.createUser(inviteData);
+            addToast({ title: 'Success', description: 'User created successfully', type: 'success' });
+            setShowInviteForm(false);
+            setInviteData({ email: '', name: '', role: 'reader' });
+            loadUsers();
+        } catch (error) {
+            addToast({ title: 'Error', description: error.message, type: 'error' });
+        } finally {
             setIsInviting(false);
-        }, 1000);
+        }
     };
+
+    const handleDelete = async (userId) => {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+
+        try {
+            await api.deleteUser(userId);
+            addToast({ title: 'Success', description: 'User deleted', type: 'success' });
+            loadUsers();
+        } catch {
+            addToast({ title: 'Error', description: 'Failed to delete user', type: 'error' });
+        }
+    };
+
+    if (isLoading) {
+        return <div className="admin-page"><p>Loading...</p></div>;
+    }
 
     return (
         <div className="admin-page">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-6">
                 <h1 className="admin-title">Users</h1>
-                <Button onClick={handleInvite} disabled={isInviting}>
-                    {isInviting ? 'Sending Invite...' : 'Invite User'}
+                <Button onClick={() => setShowInviteForm(!showInviteForm)}>
+                    {showInviteForm ? 'Cancel' : 'Add User'}
                 </Button>
             </div>
 
-            <UserTable users={users} />
+            {showInviteForm && (
+                <div className="bg-surface p-6 rounded-lg mb-6">
+                    <h2 className="text-lg font-semibold mb-4">Create New User</h2>
+                    <form onSubmit={handleInvite} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Email</label>
+                            <Input
+                                type="email"
+                                value={inviteData.email}
+                                onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Name</label>
+                            <Input
+                                type="text"
+                                value={inviteData.name}
+                                onChange={(e) => setInviteData({ ...inviteData, name: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Role</label>
+                            <select
+                                className="w-full p-2 rounded border"
+                                value={inviteData.role}
+                                onChange={(e) => setInviteData({ ...inviteData, role: e.target.value })}
+                            >
+                                <option value="reader">Reader</option>
+                                <option value="author">Author</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <Button type="submit" disabled={isInviting}>
+                            {isInviting ? 'Creating...' : 'Create User'}
+                        </Button>
+                    </form>
+                </div>
+            )}
+
+            <UserTable users={users} onDelete={handleDelete} />
         </div>
     );
 };

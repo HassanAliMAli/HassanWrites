@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Users, Eye, FileText, DollarSign } from 'lucide-react';
+import { Users, Eye, FileText } from 'lucide-react';
 import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
 import './Admin.css';
 
@@ -9,7 +9,6 @@ const Dashboard = () => {
         { label: 'Total Views', value: '45.2K', change: '+12%', icon: Eye },
         { label: 'Active Users', value: '1,205', change: '+5%', icon: Users },
         { label: 'Published Posts', value: '84', change: '+2', icon: FileText },
-        { label: 'Revenue', value: '$2,450', change: '+18%', icon: DollarSign },
     ];
 
     return (

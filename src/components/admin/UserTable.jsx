@@ -7,7 +7,7 @@ import { MoreHorizontal, Edit, Trash2, Mail } from 'lucide-react';
 import { Dropdown, DropdownItem } from '@/components/ui/Dropdown';
 import '@/pages/admin/AdminTable.css';
 
-export const UserTable = ({ users }) => {
+export const UserTable = ({ users, onDelete }) => {
     return (
         <Card>
             <CardContent className="p-0">
@@ -35,7 +35,7 @@ export const UserTable = ({ users }) => {
                                 <td>{user.role}</td>
                                 <td>
                                     <Badge variant={user.status === 'Active' ? 'success' : 'secondary'}>
-                                        {user.status}
+                                        {user.status || 'Active'}
                                     </Badge>
                                 </td>
                                 <td className="text-right">
@@ -45,7 +45,7 @@ export const UserTable = ({ users }) => {
                                     >
                                         <DropdownItem icon={Edit} onClick={() => { }}>Edit</DropdownItem>
                                         <DropdownItem icon={Mail} onClick={() => { }}>Email</DropdownItem>
-                                        <DropdownItem icon={Trash2} danger onClick={() => { }}>Delete</DropdownItem>
+                                        <DropdownItem icon={Trash2} danger onClick={() => onDelete?.(user.id)}>Delete</DropdownItem>
                                     </Dropdown>
                                 </td>
                             </tr>
