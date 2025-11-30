@@ -3,7 +3,7 @@ import { jsonResponse, errorResponse, verifyToken } from '../utils';
 export const onRequestGet = async ({ request, env }) => {
     try {
         const cookie = request.headers.get('Cookie');
-        const token = cookie?.split('session=')[1]?.split(';')[0];
+        const token = cookie?.split('auth_token=')[1]?.split(';')[0];
 
         if (!token) {
             return errorResponse('Not authenticated', 401);
@@ -29,7 +29,7 @@ export const onRequestGet = async ({ request, env }) => {
 export const onRequestPost = async ({ request, env }) => {
     try {
         const cookie = request.headers.get('Cookie');
-        const token = cookie?.split('session=')[1]?.split(';')[0];
+        const token = cookie?.split('auth_token=')[1]?.split(';')[0];
 
         if (!token) {
             return errorResponse('Not authenticated', 401);

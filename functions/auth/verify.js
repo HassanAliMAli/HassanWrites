@@ -7,24 +7,29 @@ export const onRequestGet = async ({ request, env }) => {
 
         if (!token) return errorResponse('Token required', 400);
 
-        // 1. Verify Magic Link Token (Mocked)
-        // In real app, check KV for token existence and associated email
-        // For now, we assume token is valid and maps to a demo user if it matches our mock format
-        // Or we just lookup the user by email if we passed it (insecure for prod, but okay for this stage)
+        // 1. Verify Magic Link Token
+        const link = await env.DB.prepare(`
+            SELECT * FROM magic_links WHERE token = ? AND used = 0 AND expires_at > ?
+        `).bind(token, Date.now()).first();
 
-        // Let's assume the token is a user ID for simplicity in this phase
-        // OR we just fetch the first user for demo purposes
-        const user = await env.DB.prepare('SELECT * FROM users LIMIT 1').first();
-
-        if (!user) {
-            return errorResponse('Invalid token or user not found', 401);
+        if (!link) {
+            return errorResponse('Invalid or expired token', 401);
         }
 
-        // 2. Generate Session JWT
+        // 2. Get User
+        const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(link.user_id).first();
+        if (!user) {
+            return errorResponse('User not found', 404);
+        }
+
+        // 3. Mark token as used
+        await env.DB.prepare('UPDATE magic_links SET used = 1 WHERE token = ?').bind(token).run();
+
+        // 4. Generate Session JWT
         const secret = env.JWT_SECRET || 'dev-secret-fallback';
         const sessionToken = await generateToken({ id: user.id, email: user.email, role: user.role }, secret);
 
-        // 3. Redirect to Dashboard with Cookie
+        // 5. Redirect to Dashboard with Cookie
         const headers = new Headers();
         headers.append('Set-Cookie', `session=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800`);
         headers.append('Location', '/');

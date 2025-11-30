@@ -1,85 +1,39 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/components/ui/toast-context';
-import { useAuth } from '@/context/AuthContext';
 import './Auth.css';
 
-const MOCK_USERS = [
-    {
-        id: 'admin-001',
-        email: 'admin@hassanwrites.com',
-        password: 'admin123',
-        name: 'Hassan (Admin)',
-        role: 'admin',
-        avatar_r2_key: null
-    },
-    {
-        id: 'author-001',
-        email: 'author@hassanwrites.com',
-        password: 'author123',
-        name: 'Sarah (Author)',
-        role: 'author',
-        avatar_r2_key: null
-    }
-];
+import { api } from '@/lib/api';
 
 const Login = () => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { addToast } = useToast();
-    const { refreshAuth } = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
-            const user = MOCK_USERS.find(
-                u => u.email === email && u.password === password
-            );
-
-            if (!user) {
-                addToast({
-                    title: 'Login failed',
-                    description: 'Invalid email or password',
-                    type: 'error',
-                });
-                setIsLoading(false);
-                return;
-            }
-
-            localStorage.setItem('mock_user', JSON.stringify({
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-                avatar_r2_key: user.avatar_r2_key
-            }));
-
-            await refreshAuth();
+            await api.login(email);
 
             addToast({
-                title: 'Login successful',
-                description: `Welcome back, ${user.name}!`,
+                title: 'Magic link sent',
+                description: 'Check your email for the login link.',
                 type: 'success',
             });
 
-            setTimeout(() => {
-                if (user.role === 'admin') {
-                    navigate('/admin');
-                } else {
-                    navigate('/');
-                }
-            }, 500);
-        } catch {
+            // Clear form
+            setEmail('');
+            setPassword('');
+
+        } catch (error) {
             addToast({
-                title: 'Error',
-                description: 'Login failed. Please try again.',
+                title: 'Login failed',
+                description: error.message || 'Please try again.',
                 type: 'error',
             });
         } finally {
@@ -108,38 +62,12 @@ const Login = () => {
                                 autoFocus
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="password" className="form-label">Password</label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
                         <Button type="submit" className="w-full" isLoading={isLoading}>
-                            Sign In
+                            Send Magic Link
                         </Button>
                     </form>
 
-                    <div className="auth-divider">
-                        <span>Test Accounts</span>
-                    </div>
 
-                    <div className="test-accounts">
-                        <div className="test-account-card">
-                            <strong>Admin Account</strong>
-                            <p>Email: admin@hassanwrites.com</p>
-                            <p>Password: admin123</p>
-                        </div>
-                        <div className="test-account-card">
-                            <strong>Author Account</strong>
-                            <p>Email: author@hassanwrites.com</p>
-                            <p>Password: author123</p>
-                        </div>
-                    </div>
                 </CardContent>
                 <CardFooter className="auth-card__footer">
                     <p>Have an invite code? <Link to="/auth/invite" className="link">Redeem Invite</Link></p>

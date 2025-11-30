@@ -7,7 +7,7 @@ import './PostCard.css';
 
 const PostCard = ({ post }) => {
     return (
-        <article className="post-card">
+        <article className="post-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             <Link to={`/post/${post.slug}`} className="post-card__image-link">
                 <div className="post-card__image-wrapper">
                     <img src={post.coverImage} alt={post.title} className="post-card__image" loading="lazy" />

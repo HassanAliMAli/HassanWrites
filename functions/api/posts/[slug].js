@@ -1,5 +1,5 @@
 import { jsonResponse, errorResponse, verifyToken } from '../utils.js';
-import { validateSubscriberSession, hasAccessToContent } from '../utils/auth.js';
+
 
 export const onRequestGet = async ({ request, env, params }) => {
     try {
@@ -15,31 +15,43 @@ export const onRequestGet = async ({ request, env, params }) => {
 
         if (!post) return errorResponse('Post not found', 404);
 
-        // Check if post is premium
-        const isPremium = post.is_premium === 1;
+        // Check if post is paywalled
+        const isPaywalled = post.paywall === 1;
 
         // Get content from R2 if published
         let content = null;
         let canAccess = true;
 
         if (post.status === 'published' && post.canonical_r2_key) {
-            // If post is premium, check access
-            if (isPremium) {
+            // If post is paywalled, check access
+            if (isPaywalled) {
                 // Check if request is from an author (check for author JWT)
                 const authCookie = request.headers.get('cookie')?.split(';')
                     .find(c => c.trim().startsWith('auth_token='));
 
-                // If author is logged in, they have full access
+                let user = null;
                 if (authCookie) {
+                    const token = authCookie.split('=')[1];
+                    user = await verifyToken(token, env.JWT_SECRET);
+                }
+
+                // If author/admin is logged in, they have full access
+                // Or if user has subscription
+                if (user && (user.role === 'admin' || user.role === 'author' || user.sub === post.author_id)) {
                     canAccess = true;
                 } else {
                     // Check subscriber session
-                    const subscriber = await validateSubscriberSession(request, env);
-
-                    if (subscriber) {
-                        // Check if subscriber's tier allows access
-                        // For now, premium tier gets all content, newsletter tier gets newsletter content
-                        canAccess = hasAccessToContent(subscriber, post.subscription_tier || 'premium');
+                    // For now, let's assume validateSubscriberSession handles the logic
+                    // But since we are in Phase 2, we might not have full subscription logic yet.
+                    // Let's use a placeholder or basic check.
+                    // If we have a user and they have a subscription in DB?
+                    if (user) {
+                        const sub = await env.DB.prepare('SELECT status FROM subscriptions WHERE user_id = ?').bind(user.sub).first();
+                        if (sub && sub.status === 'active') {
+                            canAccess = true;
+                        } else {
+                            canAccess = false;
+                        }
                     } else {
                         canAccess = false;
                     }
@@ -59,20 +71,20 @@ export const onRequestGet = async ({ request, env, params }) => {
         const responseData = {
             ...post,
             content: canAccess ? content : null,
-            is_premium: isPremium,
+            paywall: isPaywalled,
             has_access: canAccess,
             tags: post.tags ? JSON.parse(post.tags) : []
         };
 
-        // If premium and no access, only return excerpt
-        if (isPremium && !canAccess && content) {
+        // If paywalled and no access, only return excerpt
+        if (isPaywalled && !canAccess && content) {
             // Extract first 200 characters as excerpt
             const textContent = content.replace(/<[^>]*>/g, '').substring(0, 200);
             responseData.excerpt = textContent + '...';
         }
 
         return jsonResponse(responseData, 200, {
-            'Cache-Control': isPremium ? 'private, no-cache' : 'public, max-age=300, stale-while-revalidate=3600'
+            'Cache-Control': isPaywalled ? 'private, no-cache' : 'public, max-age=300, stale-while-revalidate=3600'
         });
 
     } catch (err) {
@@ -85,14 +97,14 @@ export const onRequestPut = async ({ request, env, params }) => {
     try {
         const { slug } = params;
         const cookie = request.headers.get('Cookie');
-        const token = cookie?.split('session=')[1]?.split(';')[0];
+        const token = cookie?.split('auth_token=')[1]?.split(';')[0];
         if (!token) return errorResponse('Unauthorized', 401);
 
         const secret = env.JWT_SECRET || 'dev-secret-fallback';
         const user = await verifyToken(token, secret);
         if (!user) return errorResponse('Invalid token', 401);
 
-        const { title, excerpt, tags, is_premium, status } = await request.json();
+        const { title, excerpt, tags, paywall, status } = await request.json();
         const now = Math.floor(Date.now() / 1000);
 
         // Build update query dynamically
@@ -111,9 +123,9 @@ export const onRequestPut = async ({ request, env, params }) => {
             query += ', tags = ?';
             queryParams.push(JSON.stringify(tags));
         }
-        if (is_premium !== undefined) {
-            query += ', is_premium = ?';
-            queryParams.push(is_premium ? 1 : 0);
+        if (paywall !== undefined) {
+            query += ', paywall = ?';
+            queryParams.push(paywall ? 1 : 0);
         }
         if (status !== undefined) {
             query += ', status = ?';
@@ -121,7 +133,7 @@ export const onRequestPut = async ({ request, env, params }) => {
         }
 
         query += ' WHERE slug = ? AND author_id = ?';
-        queryParams.push(slug, user.id);
+        queryParams.push(slug, user.sub); // verifyToken returns sub
 
         const result = await env.DB.prepare(query).bind(...queryParams).run();
 

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '@/lib/api';
 import { ArticleShell } from '@/components/layout/ArticleShell';
 import { Avatar } from '@/components/ui/Avatar';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import Comments from '@/components/blog/Comments';
@@ -39,7 +40,31 @@ const Article = () => {
         fetchPost();
     }, [slug]);
 
-    if (isLoading) return <div className="container py-12 text-center">Loading...</div>;
+    if (isLoading) {
+        return (
+            <ArticleShell>
+                <div className="article-header animate-pulse">
+                    <div className="article-meta mb-6">
+                        <div className="flex items-center gap-3">
+                            <Skeleton className="h-10 w-10 rounded-full" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-32" />
+                                <Skeleton className="h-3 w-24" />
+                            </div>
+                        </div>
+                    </div>
+                    <Skeleton className="h-12 w-3/4 mb-4" />
+                    <Skeleton className="h-6 w-full mb-8" />
+                </div>
+                <Skeleton className="w-full aspect-[21/9] rounded-xl mb-12" />
+                <div className="space-y-4">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                </div>
+            </ArticleShell>
+        );
+    }
     if (!post) return <div className="container py-12 text-center">Post not found</div>;
 
     return (

@@ -1,29 +1,40 @@
-import { jsonResponse, errorResponse, verifyToken } from '../utils';
+import { jsonResponse, verifyToken } from '../utils.js';
 
-export const onRequestGet = async ({ request, env }) => {
+export const onRequestGet = async (context) => {
     try {
-        const cookie = request.headers.get('Cookie');
-        const token = cookie?.split('session=')[1]?.split(';')[0];
+        const { request, env } = context;
+
+        // 1. Get Cookie
+        const cookieHeader = request.headers.get('Cookie');
+        if (!cookieHeader) {
+            return jsonResponse({ user: null });
+        }
+
+        const cookies = Object.fromEntries(cookieHeader.split('; ').map(c => c.split('=')));
+        const token = cookies['auth_token'];
 
         if (!token) {
-            return errorResponse('Not authenticated', 401);
+            return jsonResponse({ user: null });
         }
 
-        const secret = env.JWT_SECRET || 'dev-secret-fallback';
-        const user = await verifyToken(token, secret);
+        // 2. Verify Token
+        const payload = await verifyToken(token, env.JWT_SECRET);
+        if (!payload) {
+            return jsonResponse({ user: null });
+        }
+
+        // 3. Fetch User
+        const db = env.DB;
+        const user = await db.prepare('SELECT id, email, name, role, avatar_r2_key, banner_r2_key, accent_color, stripe_customer_id FROM users WHERE id = ?').bind(payload.sub).first();
 
         if (!user) {
-            return errorResponse('Invalid token', 401);
+            return jsonResponse({ user: null });
         }
 
-        return jsonResponse({
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-            avatar_r2_key: user.avatar_r2_key
-        });
-    } catch (err) {
-        return errorResponse(err.message, 500);
+        return jsonResponse({ user });
+
+    } catch (error) {
+        console.error('Me error:', error);
+        return jsonResponse({ user: null });
     }
 };

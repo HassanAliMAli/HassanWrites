@@ -26,6 +26,7 @@ const Subscribers = lazy(() => import('@/pages/admin/Subscribers'));
 const Settings = lazy(() => import('@/pages/admin/Settings'));
 
 import AnalyticsTracker from '@/components/AnalyticsTracker';
+import PageTransition from '@/components/PageTransition';
 
 function App() {
   return (
@@ -54,13 +55,13 @@ function App() {
 
           {/* Main Routes */}
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="search" element={<Search />} />
-            <Route path="membership" element={<Membership />} />
-            <Route path="subscribe/success" element={<SubscribeSuccess />} />
-            <Route path="post/:slug" element={<Article />} />
-            <Route path="profile/:username" element={<Profile />} />
-            <Route path="*" element={<NotFound />} />
+            <Route index element={<PageTransition><Home /></PageTransition>} />
+            <Route path="search" element={<PageTransition><Search /></PageTransition>} />
+            <Route path="membership" element={<PageTransition><Membership /></PageTransition>} />
+            <Route path="subscribe/success" element={<PageTransition><SubscribeSuccess /></PageTransition>} />
+            <Route path="post/:slug" element={<PageTransition><Article /></PageTransition>} />
+            <Route path="profile/:username" element={<PageTransition><Profile /></PageTransition>} />
+            <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
           </Route>
         </Routes>
       </Suspense>

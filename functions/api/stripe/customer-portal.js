@@ -1,56 +1,39 @@
 
-import { jsonResponse } from '../utils.js';
+import Stripe from 'stripe';
+import { jsonResponse, errorResponse, verifyToken } from '../utils.js';
 
 export async function onRequestPost(context) {
-    const { request } = context;
+    const { request, env } = context;
 
     try {
-        // Get subscriber session from cookie
-        const cookies = request.headers.get('cookie') || '';
-        const sessionCookie = cookies.split(';').find(c => c.trim().startsWith('subscriber_session='));
+        // 1. Auth Check
+        const cookie = request.headers.get('Cookie');
+        const token = cookie?.split('auth_token=')[1]?.split(';')[0];
+        if (!token) return errorResponse('Unauthorized', 401);
 
-        if (!sessionCookie) {
-            return jsonResponse({ error: 'Not authenticated' }, 401);
+        const secret = env.JWT_SECRET || 'dev-secret-fallback';
+        const user = await verifyToken(token, secret);
+        if (!user) return errorResponse('Invalid token', 401);
+
+        // 2. Get User's Stripe Customer ID
+        const dbUser = await env.DB.prepare('SELECT stripe_customer_id FROM users WHERE id = ?').bind(user.sub).first();
+
+        if (!dbUser || !dbUser.stripe_customer_id) {
+            return errorResponse('No subscription found', 404);
         }
 
-        // Extract token (simplified - in production use JWT verification)
-        // const token = sessionCookie.split('=')[1];
+        // 3. Create Portal Session
+        const stripe = new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
 
-        // TODO: Verify JWT and get subscriber_id
-        // For now, we'll extract from token payload
-        // const payload = await verifyJWT(token, env.JWT_SECRET);
-        // const subscriber_id = payload.subscriber_id;
+        const session = await stripe.billingPortal.sessions.create({
+            customer: dbUser.stripe_customer_id,
+            return_url: `${new URL(request.url).origin}/membership`
+        });
 
-        // Get subscriber from database
-        // const subscriber = await env.DB.prepare(`
-        //     SELECT stripe_customer_id FROM subscribers WHERE id = ?
-        // `).bind(subscriber_id).first();
-
-        // if (!subscriber) {
-        //     return jsonResponse({ error: 'Subscriber not found' }, 404);
-        // }
-
-        // For now, return error - this will be completed after JWT utils are created
-        return jsonResponse({
-            error: 'Customer portal generation will be completed after JWT utilities are implemented'
-        }, 501);
-
-        // Initialize Stripe
-        // const stripe = new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
-
-        // Create portal session
-        // const session = await stripe.billingPortal.sessions.create({
-        //     customer: subscriber.stripe_customer_id,
-        //     return_url: `${env.SITE_URL}/membership`
-        // });
-
-        // return jsonResponse({ portalUrl: session.url });
+        return jsonResponse({ portalUrl: session.url });
 
     } catch (error) {
         console.error('Customer portal error:', error);
-        return jsonResponse({
-            error: 'Failed to create portal session',
-            details: error.message
-        }, 500);
+        return errorResponse(error.message, 500);
     }
 }

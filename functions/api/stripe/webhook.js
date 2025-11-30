@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
-import { initializeStripe, verifyStripeWebhook, getTierFromPriceId, SUBSCRIPTION_STATUS } from '../utils/stripe.js';
-import { sendWelcomeEmail, sendMagicLinkEmail, sendPaymentFailedEmail, sendSubscriptionCanceledEmail } from '../utils/email.js';
+import { initializeStripe, verifyStripeWebhook, SUBSCRIPTION_STATUS } from '../utils/stripe.js';
+import { sendWelcomeEmail, sendPaymentFailedEmail, sendSubscriptionCanceledEmail } from '../utils/email.js';
 
 export async function onRequestPost(context) {
     const { request, env } = context;
@@ -32,7 +32,8 @@ export async function onRequestPost(context) {
                 await handlePaymentFailed(event.data.object, env);
                 break;
             default:
-                console.log(`Unhandled event type ${event.type}`);
+                // Silently ignore unhandled event types
+                break;
         }
 
         return new Response(JSON.stringify({ received: true }), {
@@ -46,101 +47,78 @@ export async function onRequestPost(context) {
 }
 
 async function handleSubscriptionUpdated(subscription, env) {
-    const { customer, status, items, current_period_end } = subscription;
-    const priceId = items.data[0].price.id;
-    const tier = getTierFromPriceId(priceId, env);
+    const { customer, status, current_period_end, id: subscriptionId } = subscription;
     const now = Date.now();
 
-    // Update subscriber record
+    // 1. Find user by stripe_customer_id
+    const user = await env.DB.prepare('SELECT id, email, name FROM users WHERE stripe_customer_id = ?').bind(customer).first();
+
+    if (!user) {
+        console.error(`User not found for customer ${customer}`);
+        return;
+    }
+
+    // 2. Upsert subscription
     await env.DB.prepare(`
-        UPDATE subscribers 
-        SET subscription_tier = ?, 
-            subscription_status = ?, 
-            current_period_end = ?,
-            updated_at = ?
-        WHERE stripe_customer_id = ?
-    `).bind(tier, status, current_period_end, now, customer).run();
-
-
+        INSERT INTO subscriptions (user_id, stripe_subscription_id, status, current_period_end, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(user_id) DO UPDATE SET
+            stripe_subscription_id = excluded.stripe_subscription_id,
+            status = excluded.status,
+            current_period_end = excluded.current_period_end
+    `).bind(user.id, subscriptionId, status, current_period_end, Math.floor(now / 1000)).run();
 
     // Send welcome email if new active subscription
     if (status === 'active') {
-        // We need to fetch the user's email from the database
-        const subscriber = await env.DB.prepare(`
-            SELECT email, id FROM subscribers WHERE stripe_customer_id = ?
-        `).bind(customer).first();
-
-        if (subscriber) {
-            // Check if this is a new subscription (created_at close to now) or just an update
-            // For simplicity, we might just send magic link if they don't have a session?
-            // Or just send a welcome email.
-            await sendWelcomeEmail(subscriber.email, subscriber.name || 'Subscriber', env);
-            await sendMagicLinkEmail(subscriber.id, subscriber.email, env);
-        }
+        // Check if we should send welcome email (maybe check if created_at is recent?)
+        // For now, let's just send it.
+        await sendWelcomeEmail(user.email, user.name || 'Subscriber', env);
+        // await sendMagicLinkEmail(user.email, ..., env); // Magic link needs token generation
     }
 }
 
 async function handleSubscriptionDeleted(subscription, env) {
     const { customer } = subscription;
-    const now = Date.now();
 
-    // Update subscriber status to canceled
+    const user = await env.DB.prepare('SELECT id, email, name FROM users WHERE stripe_customer_id = ?').bind(customer).first();
+    if (!user) return;
+
+    // Update status to canceled
     await env.DB.prepare(`
-        UPDATE subscribers 
-        SET subscription_status = ?, 
-            updated_at = ?
-        WHERE stripe_customer_id = ?
-    `).bind(SUBSCRIPTION_STATUS.CANCELED, now, customer).run();
+        UPDATE subscriptions 
+        SET status = ?
+        WHERE user_id = ?
+    `).bind(SUBSCRIPTION_STATUS.CANCELED, user.id).run();
 
-
-
-    const subscriber = await env.DB.prepare(`
-        SELECT email, name FROM subscribers WHERE stripe_customer_id = ?
-    `).bind(customer).first();
-
-    if (subscriber) {
-        await sendSubscriptionCanceledEmail(subscriber.email, subscriber.name, env);
-    }
+    await sendSubscriptionCanceledEmail(user.email, env);
 }
 
 async function handlePaymentSucceeded(invoice, env) {
     const { customer, subscription, period_end } = invoice;
+    if (!subscription) return;
 
-    if (!subscription) return; // Skip non-subscription invoices
+    const user = await env.DB.prepare('SELECT id FROM users WHERE stripe_customer_id = ?').bind(customer).first();
+    if (!user) return;
 
-    const now = Date.now();
-
-    // Update subscription period
     await env.DB.prepare(`
-        UPDATE subscribers 
+        UPDATE subscriptions 
         SET current_period_end = ?,
-            subscription_status = ?,
-            updated_at = ?
-        WHERE stripe_customer_id = ?
-    `).bind(period_end, SUBSCRIPTION_STATUS.ACTIVE, now, customer).run();
-
-
+            status = ?
+        WHERE user_id = ?
+    `).bind(period_end, SUBSCRIPTION_STATUS.ACTIVE, user.id).run();
 }
 
 async function handlePaymentFailed(invoice, env) {
     const { customer } = invoice;
-    const now = Date.now();
 
-    // Update status to past_due
+    const user = await env.DB.prepare('SELECT id, email, name FROM users WHERE stripe_customer_id = ?').bind(customer).first();
+    if (!user) return;
+
     await env.DB.prepare(`
-        UPDATE subscribers 
-        SET subscription_status = ?,
-            updated_at = ?
-        WHERE stripe_customer_id = ?
-    `).bind(SUBSCRIPTION_STATUS.PAST_DUE, now, customer).run();
+        UPDATE subscriptions 
+        SET status = ?
+        WHERE user_id = ?
+    `).bind(SUBSCRIPTION_STATUS.PAST_DUE, user.id).run();
 
-
-
-    const subscriber = await env.DB.prepare(`
-        SELECT email, name FROM subscribers WHERE stripe_customer_id = ?
-    `).bind(customer).first();
-
-    if (subscriber) {
-        await sendPaymentFailedEmail(subscriber.email, subscriber.name, env);
-    }
+    await sendPaymentFailedEmail(user.email, env); // Removed portalLink for now as we need to generate it
 }

@@ -30,14 +30,14 @@ export const onRequestGet = async ({ request, env }) => {
 export const onRequestPost = async ({ request, env }) => {
     try {
         const cookie = request.headers.get('Cookie');
-        const token = cookie?.split('session=')[1]?.split(';')[0];
+        const token = cookie?.split('auth_token=')[1]?.split(';')[0];
         if (!token) return errorResponse('Unauthorized', 401);
 
         const secret = env.JWT_SECRET || 'dev-secret-fallback';
         const user = await verifyToken(token, secret);
         if (!user) return errorResponse('Invalid token', 401);
 
-        const { title, slug, excerpt, tags, is_premium } = await request.json();
+        const { title, slug, excerpt, tags, paywall } = await request.json();
 
         if (!title || !slug) return errorResponse('Title and Slug are required', 400);
 
@@ -45,16 +45,16 @@ export const onRequestPost = async ({ request, env }) => {
         const now = Math.floor(Date.now() / 1000);
 
         await env.DB.prepare(
-            `INSERT INTO posts (id, author_id, title, slug, excerpt, tags, is_premium, status, created_at, updated_at) 
+            `INSERT INTO posts (id, author_id, title, slug, excerpt, tags, paywall, status, created_at, updated_at) 
              VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?)`
         ).bind(
             id,
-            user.id,
+            user.sub, // verifyToken returns payload with sub
             title,
             slug,
             excerpt || '',
             JSON.stringify(tags || []),
-            is_premium ? 1 : 0,
+            paywall ? 1 : 0,
             now,
             now
         ).run();

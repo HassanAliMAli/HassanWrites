@@ -18,6 +18,7 @@ const Button = React.forwardRef(({
                 `btn--${variant}`,
                 `btn--${size}`,
                 isLoading && 'btn--loading',
+                'transition-transform duration-100 active:scale-95',
                 className
             )}
             disabled={isLoading || props.disabled}

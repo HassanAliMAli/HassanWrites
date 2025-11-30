@@ -37,6 +37,11 @@ name = "DASHBOARD_DO"
 class_name = "DashboardStats"
 script_name = "dashboard-do"
 
+[[durable_objects.bindings]]
+name = "COMMENT_DO"
+class_name = "CommentChannel"
+script_name = "comment-do"
+
 [[migrations]]
 tag = "v1"
-new_classes = ["EditorSession", "DashboardStats"]
+new_classes = ["EditorSession", "DashboardStats", "CommentChannel"]
