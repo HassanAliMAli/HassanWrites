@@ -28,7 +28,7 @@ const Login = () => {
 
             // Clear form
             setEmail('');
-            setPassword('');
+
 
         } catch (error) {
             addToast({
